@@ -1,0 +1,22 @@
+{
+  "compiler": {
+    "g++": {
+      "std": "c++17",
+      "always": "-I . -Wall -Wextra -Wshadow",
+      "profiles": {
+        "fast": "-static -O2",
+        "debug": "-fsanitize=address -fsanitize=undefined"
+      },
+      "localDebug": "-DLOCAL_DEBUG"
+    },
+    "clang": {
+      "std": "c++17",
+      "always": "-I . -Wall -Wextra -Wshadow",
+      "profiles": {
+        "fast": "",
+        "debug": ""
+      },
+      "localDebug": "-DLOCAL_DEBUG"
+    }
+  }
+}
