@@ -17,6 +17,7 @@ from rithm.commands.check_dependencies import (
     check_dependencies_command,
     check_all_command,
 )
+from rithm.commands.test import test_command
 
 
 def main():
@@ -46,6 +47,10 @@ def main():
     check_all = subparsers.add_parser("check-all")
     check_all.add_argument("path")
     check_all.set_defaults(cmd=check_all_command)
+
+    test = subparsers.add_parser("test")
+    test.add_argument("path")
+    test.set_defaults(cmd=test_command)
 
     args = parser.parse_args()
 
