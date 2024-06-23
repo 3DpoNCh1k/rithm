@@ -8,7 +8,7 @@ BIN_DIRECTORY = RITHM_DIRECTORY / "bin"
 
 RUN_SCRIPT_FILE = BIN_DIRECTORY / "rithm"
 RUN_SCRIPT_TEXT = f"""#!/bin/sh
-{RITHM_DIRECTORY}/rithm.py
+{RITHM_DIRECTORY}/rithm.py $@
 """
 
 ACTIVATION_SCRIPT_FILE = RITHM_DIRECTORY / "activation.sh"

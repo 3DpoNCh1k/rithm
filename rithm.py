@@ -48,6 +48,7 @@ def main():
     check_all.set_defaults(cmd=check_all_command)
 
     args = parser.parse_args()
+
     if "cmd" not in args:
         parser.print_help()
         sys.exit(2)
