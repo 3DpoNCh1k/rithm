@@ -208,8 +208,12 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/c++,python
 
-# Manually added 
+### rithm ###
 
-# developing
+# development
 .vscode/
 submit/
+
+# installation
+bin/
+activation.sh

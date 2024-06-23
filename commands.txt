@@ -1,0 +1,5 @@
+run
+clean
+prepare-submission
+check-dependencies
+check-all
