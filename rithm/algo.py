@@ -1,16 +1,6 @@
 import json
 from .utils import *
 
-def expand_algo_includes(text, dependency_order):
-    algo_text_list = []
-    for file_node in dependency_order:
-        file_text = file_node.file.text
-        file_text = remove_pragma(file_text)
-        file_text = remove_includes(file_text)
-        algo_text_list.append(file_text)
-
-    algo_text = "\n".join(algo_text_list)
-    return text + "\n" + algo_text
 
 class Task:
     def __init__(self, path):
@@ -34,9 +24,20 @@ class Task:
         return self._path.parent / self._content["solution"]
 
 
-def get_all_tasks(path):
-    return list(map(lambda path: Task(path), path.glob("**/task.json")))
-
-
 class Algo:
-    pass
+    def __init__(self, path):
+        self.path = path
+
+    def get_all_tasks(self, search_path):
+        return list(map(lambda path: Task(path), search_path.glob("**/task.json")))
+
+    def expand_algo_includes(self, text, dependency_order):
+        algo_text_list = []
+        for file_node in dependency_order:
+            file_text = file_node.file.text
+            file_text = remove_pragma(file_text)
+            file_text = remove_includes(file_text)
+            algo_text_list.append(file_text)
+
+        algo_text = "\n".join(algo_text_list)
+        return text + "\n" + algo_text
