@@ -30,3 +30,12 @@ def run_command(args):
     assert res.returncode == 0
     res = subprocess.run(executable, shell=True, check=True)
     assert res.returncode == 0
+
+
+def add_run_command(subparsers):
+    run = subparsers.add_parser("run")
+    run.add_argument("filename")
+    run.add_argument("profile")
+    run.add_argument("local_debug", nargs="?", default=False)
+    run.add_argument("--compiler", choices=["g++", "clang"], default="g++")
+    run.set_defaults(cmd=run_command)

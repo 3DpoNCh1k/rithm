@@ -12,3 +12,9 @@ def clean_command(args):
         )
         for filename in to_remove:
             os.remove(path + os.sep + filename)
+
+
+def add_clean_command(subparsers):
+    clean = subparsers.add_parser("clean")
+    clean.add_argument("path")
+    clean.set_defaults(cmd=clean_command)
