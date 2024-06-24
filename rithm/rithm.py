@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path
 import re
 import sys
+import tempfile
 
 
 from .config import *
@@ -20,10 +21,7 @@ class Rithm:
 
     def run_command(self, profile, compiler, filename, local_debug):
         local_debug = bool(local_debug)
-        print("Rithm.run_command")
-        # return
-
-        # assert filename[-4:] == ".cpp"
+        assert filename[-4:] == ".cpp"
         executable = filename[:-4] + ".exe"
 
         config = load_config()
@@ -39,7 +37,6 @@ class Rithm:
 
         compiler = Compiler(options)
         print(compiler.compilation_line)
-        # return
 
         if os.path.exists(executable):
             os.remove(executable)
@@ -51,70 +48,21 @@ class Rithm:
 
     def prepare_submission_command(self, filename):
         file_path = Path(filename)
-        print("Rithm.prepare_submission_command")
-        # return
-
         submission_text = self.algo.create_submission_text(file_path)
         name = file_path.name
         print(os.getcwd())
-        # return
         folder = file_path.parent
         new_folder_path = Path(".") / "submit" / folder.name
         new_folder_path.mkdir(parents=True, exist_ok=True)
         open(new_folder_path / f"submission_{name}", "w").write(submission_text)
 
     def test_command(self, path):
-        print("Rithm.test_command")
         path = Path(path)
         tasks = self.algo.get_all_tasks(path)
         for task in tasks:
             self._process_task(task)
 
-    def _process_task(self, task: Task):
-        if task.has_local_tests() and task.has_solution():
-            self._test_task(task)
-
-    def _test_task(self, task: Task):
-        problem_checker = self.library_checker.create_problem_checker(
-            Path(task["library-checker-problems"])
-        )
-        problem_checker.generate_testcases()
-
-        tmp_rithm_path = Path("/tmp/rithm")
-        tmp_rithm_path.mkdir(exist_ok=True)
-        outputs_path = tmp_rithm_path / "outputs"
-        outputs_path.mkdir(exist_ok=True)
-        solver_path = tmp_rithm_path / "solver.exe"
-
-        options = Options(
-            compiler="g++",
-            std=17,
-            includes=[ALGO_PATH],
-            sanitizers=["address", "undefined"],
-            warnings=["all", "extra", "shadow"],
-        )
-        compiler = Compiler(options)
-        compiler.compile_file(task.solution_path, solver_path)
-
-        self._produce_solution_outputs(solver_path, problem_checker, outputs_path)
-        problem_checker.validate_testcases(outputs_path)
-
-    def _produce_solution_outputs(self, solution_path, problem_checker, output_path):
-        print("produce_solution_outputs")
-        for testcase in problem_checker.get_testcases():
-            name = testcase.name[:-3]
-            my_output = output_path / f"{name}.out"
-            self._produce_solution_output(solution_path, testcase, my_output)
-
-    def _produce_solution_output(self, solution_path, testcase_path, output_path):
-        self._run(solution_path, testcase_path, output_path)
-
-    def _run(self, program, input_file, output_file):
-        cmd = f"{program} < {input_file} > {output_file}"
-        subprocess.check_call(cmd, shell=True)
-
     def clean_command(self, path):
-        print("Rithm.clean_command")
         path = Path(path).absolute()
         patterns = [".*\.exe$", ".*\.exp$", ".*\.lib$", ".*\.pdb$"]
         for pathname, _, filenames in os.walk(path):
@@ -128,14 +76,10 @@ class Rithm:
                 os.remove(Path(pathname) / filename)
 
     def check_dependencies_command(self, filename):
-        print("Rithm.check_dependencies_command")
-        # return
         self._check_dependency_cycle(Path(filename))
         print("Success!")
 
     def check_all_command(self, path):
-        print("Rithm.check_all_command")
-        # return
         path = Path(path)
         cpp_extensions = ["cpp", "hpp", "h"]
         for ext in cpp_extensions:
@@ -162,6 +106,48 @@ class Rithm:
                     sys.exit(1)
 
         print("Success!")
+
+    def _process_task(self, task: Task):
+        if task.has_local_tests() and task.has_solution():
+            self._test_task(task)
+
+    def _test_task(self, task: Task):
+        problem_checker = self.library_checker.create_problem_checker(
+            Path(task["library-checker-problems"])
+        )
+        problem_checker.generate_testcases()
+
+        options = Options(
+            compiler="g++",
+            std=17,
+            includes=[ALGO_PATH],
+            sanitizers=["address", "undefined"],
+            warnings=["all", "extra", "shadow"],
+        )
+        compiler = Compiler(options)
+
+        with tempfile.TemporaryDirectory() as temporary_build_directory:
+            build_path = Path(temporary_build_directory)
+            outputs_path = build_path / "outputs"
+            outputs_path.mkdir(exist_ok=True)
+            solver_path = build_path / "solver"
+            compiler.compile_file(task.solution_path, solver_path)
+            self._produce_solution_outputs(solver_path, problem_checker, outputs_path)
+            problem_checker.validate_testcases(outputs_path)
+
+    def _produce_solution_outputs(self, solution_path, problem_checker, output_path):
+        print("produce_solution_outputs")
+        for testcase in problem_checker.get_testcases():
+            name = testcase.name[:-3]
+            my_output = output_path / f"{name}.out"
+            self._produce_solution_output(solution_path, testcase, my_output)
+
+    def _produce_solution_output(self, solution_path, testcase_path, output_path):
+        self._run(solution_path, testcase_path, output_path)
+
+    def _run(self, program, input_file, output_file):
+        cmd = f"{program} < {input_file} > {output_file}"
+        subprocess.check_call(cmd, shell=True)
 
 
 rithm = Rithm()
