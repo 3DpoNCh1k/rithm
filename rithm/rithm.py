@@ -21,9 +21,9 @@ class Rithm:
     def run_command(self, profile, compiler, filename, local_debug):
         local_debug = bool(local_debug)
         print("Rithm.run_command")
-        return
+        # return
 
-        assert filename[-4:] == ".cpp"
+        # assert filename[-4:] == ".cpp"
         executable = filename[:-4] + ".exe"
 
         config = load_config()
@@ -33,37 +33,32 @@ class Rithm:
         profile_flags = config["profiles"][profile]
         debug_flags = config["localDebug"] if local_debug else ""
 
-        cmd = f"{compiler} --std={std} {always_flags} {profile_flags} {debug_flags}"
-        cmd += f" -o {executable} {filename}"
+        cmd_line = f"--std={std} {always_flags} {profile_flags} {debug_flags}"
+
+        options = Options(compiler=compiler, others=cmd_line)
+
+        compiler = Compiler(options)
+        print(compiler.compilation_line)
+        # return
 
         if os.path.exists(executable):
             os.remove(executable)
 
-        res = subprocess.run(cmd, shell=True, check=True)
-        assert res.returncode == 0
+        compiler.compile_file(filename, executable)
         res = subprocess.run(executable, shell=True, check=True)
         assert res.returncode == 0
+        print("Success!")
 
     def prepare_submission_command(self, filename):
         file_path = Path(filename)
         print("Rithm.prepare_submission_command")
-        return
+        # return
 
-        folder = file_path.parent
-
-        dependency_graph = create_graph(file_path)
-        dependency_order = get_topological_order(dependency_graph)
-        std_dependencies = set()
-        for file_node in dependency_order:
-            std_dependencies.update(file_node.file.std_dependencies)
-
-        header = "// TODO: add header"
-        text = header
-        text = add_std_includes(text, std_dependencies)
-        text = expand_algo_includes(text, dependency_order)
-
-        submission_text = text
+        submission_text = self.algo.create_submission_text(file_path)
         name = file_path.name
+        print(os.getcwd())
+        # return
+        folder = file_path.parent
         new_folder_path = Path(".") / "submit" / folder.name
         new_folder_path.mkdir(parents=True, exist_ok=True)
         open(new_folder_path / f"submission_{name}", "w").write(submission_text)
@@ -120,10 +115,9 @@ class Rithm:
 
     def clean_command(self, path):
         print("Rithm.clean_command")
-        return
-        path = args.path
+        path = Path(path).absolute()
         patterns = [".*\.exe$", ".*\.exp$", ".*\.lib$", ".*\.pdb$"]
-        for path, _, filenames in os.walk(path):
+        for pathname, _, filenames in os.walk(path):
             to_remove = filter(
                 lambda filename: any(
                     re.match(pattern, filename) for pattern in patterns
@@ -131,36 +125,33 @@ class Rithm:
                 filenames,
             )
             for filename in to_remove:
-                os.remove(path + os.sep + filename)
+                os.remove(Path(pathname) / filename)
 
-    def check_dependencies_command(self, path):
+    def check_dependencies_command(self, filename):
         print("Rithm.check_dependencies_command")
-        return
-        path = Path(args.filename)
-        g = create_graph(path)
-        result, cycle = has_cycle(g)
-        if result:
-            print(f"Found cycle: {cycle}")
-            sys.exit(1)
+        # return
+        self._check_dependency_cycle(Path(filename))
         print("Success!")
 
     def check_all_command(self, path):
         print("Rithm.check_all_command")
-        return
-        path = Path(args.path)
+        # return
+        path = Path(path)
         cpp_extensions = ["cpp", "hpp", "h"]
         for ext in cpp_extensions:
             for file_path in path.glob(f"**/*.{ext}"):
                 print(file_path)
-                # continue
-                g = create_graph(file_path)
-                result, cycle = has_cycle(g)
-                if result:
-                    print(f"Found cycle: {cycle}")
-                    sys.exit(1)
+                self._check_dependency_cycle(file_path)
 
         self._check_pragma(path)
         print("Success!")
+
+    def _check_dependency_cycle(self, file_path):
+        g = create_graph(file_path)
+        result, cycle = has_cycle(g)
+        if result:
+            print(f"Found cycle: {cycle}")
+            sys.exit(1)
 
     def _check_pragma(self, path):
         header_extensions = ["hpp", "h"]

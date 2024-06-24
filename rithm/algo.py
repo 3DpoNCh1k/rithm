@@ -1,4 +1,6 @@
 import json
+
+from rithm.graph import create_graph, get_topological_order
 from .utils import *
 
 
@@ -31,7 +33,7 @@ class Algo:
     def get_all_tasks(self, search_path):
         return list(map(lambda path: Task(path), search_path.glob("**/task.json")))
 
-    def expand_algo_includes(self, text, dependency_order):
+    def expand_includes(self, text, dependency_order):
         algo_text_list = []
         for file_node in dependency_order:
             file_text = file_node.file.text
@@ -41,3 +43,17 @@ class Algo:
 
         algo_text = "\n".join(algo_text_list)
         return text + "\n" + algo_text
+
+    def create_submission_text(self, file_path):
+        dependency_graph = create_graph(file_path)
+        dependency_order = get_topological_order(dependency_graph)
+        std_dependencies = set()
+        for file_node in dependency_order:
+            std_dependencies.update(file_node.file.std_dependencies)
+
+        header = "// TODO: add header"
+        text = header
+        text = add_std_includes(text, std_dependencies)
+        text = self.expand_includes(text, dependency_order)
+
+        return text

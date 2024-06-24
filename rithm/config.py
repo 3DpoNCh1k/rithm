@@ -4,10 +4,6 @@ from pathlib import Path
 import sys
 
 
-def load_config():
-    return json.load(open("config.json"))
-
-
 # TODO: handle it better
 try:
     ALGO_PATH = Path(os.environ["ALGO_PATH"])
@@ -20,3 +16,7 @@ except KeyError:
 CONFIG_DIRECTORY = Path(os.path.realpath(__file__)).parent
 RITHM_DIRECTORY = CONFIG_DIRECTORY.parent
 LIBRARY_CHECKER_DIRECTORY = RITHM_DIRECTORY / "library-checker-problems"
+
+def load_config():
+    return json.load(open(RITHM_DIRECTORY / "config.json"))
+
