@@ -1,18 +1,7 @@
-import os
-import re
-
+from rithm.rithm import rithm
 
 def clean_command(args):
-    path = args.path
-    patterns = [".*\.exe$", ".*\.exp$", ".*\.lib$", ".*\.pdb$"]
-    for path, _, filenames in os.walk(path):
-        to_remove = filter(
-            lambda filename: any(re.match(pattern, filename) for pattern in patterns),
-            filenames,
-        )
-        for filename in to_remove:
-            os.remove(path + os.sep + filename)
-
+    rithm.clean_command(args.path)
 
 def add_clean_command(subparsers):
     clean = subparsers.add_parser("clean")
