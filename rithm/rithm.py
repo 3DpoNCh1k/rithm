@@ -2,95 +2,20 @@ import os
 import subprocess
 from pathlib import Path
 import re
-
-import json
-import os
-from pathlib import Path
-import subprocess
 import sys
 
 
 from .config import *
-
 from .graph import *
-from .source_files import *
-
-
-
-COMMANDS_DIRECTORY = Path(os.path.realpath(__file__)).parent
-RITHM_DIRECTORY = COMMANDS_DIRECTORY.parent.parent
-LIBRARY_CHECKER_DIRECTORY = RITHM_DIRECTORY / "library-checker-problems"
-
-
-def remove_pragma(text):
-    return re.sub("#pragma once", "", text).lstrip()
-
-
-def remove_includes(text):
-    new_text_parts = []
-    last_index = 0
-    for match in re.finditer(r"(?P<include>#include.*\n?)", text):
-        new_text_parts.append(text[last_index : match.start()])
-        last_index = match.end()
-
-    new_text_parts.append(text[last_index:])
-    new_text = "".join(new_text_parts)
-    new_text = new_text.lstrip()
-    return new_text
-
-
-def add_std_includes(text, std_dependencies):
-    include_list = list(map(lambda name: f"#include <{name}>", std_dependencies))
-    include_text = "\n".join(include_list)
-    return text + "\n" + include_text
-
-
-def expand_algo_includes(text, dependency_order):
-    algo_text_list = []
-    for file_node in dependency_order:
-        file_text = file_node.file.text
-        file_text = remove_pragma(file_text)
-        file_text = remove_includes(file_text)
-        algo_text_list.append(file_text)
-
-    algo_text = "\n".join(algo_text_list)
-    return text + "\n" + algo_text
-
-
-class Task:
-    def __init__(self, path):
-        self._path = path
-        self._content = json.load(path.open())
-
-    def __getitem__(self, key):
-        return self._content.get(key)
-
-    def __repr__(self):
-        return str(self._path)
-
-    def has_local_tests(self):
-        return "library-checker-problems" in self._content
-
-    def has_solution(self):
-        return "solution" in self._content
-
-    @property
-    def solution_path(self):
-        return self._path.parent / self._content["solution"]
-
-
-def get_all_tasks(path):
-    return list(map(lambda path: Task(path), path.glob("**/task.json")))
+from .utils import *
+from .library_checker import *
+from .algo import *
+from .compiler import *
 
 
 def process_task(task: Task):
     if task.has_local_tests() and task.has_solution():
         test_task(task)
-
-
-def compile_solver(solution_path, solver_path):
-    cmd = f"g++ --std=c++17 -I {ALGO_PATH} -Wall -Wextra -Wshadow -fsanitize=address -fsanitize=undefined -o {solver_path} {solution_path}"
-    subprocess.check_call(cmd, shell=True)
 
 
 def test_task(task: Task):
@@ -104,13 +29,6 @@ def test_task(task: Task):
     compile_solver(task.solution_path, solver_path)
     produce_solution_outputs(solver_path, checker_path, outputs_path)
     validate_solution_outputs(checker_path, outputs_path)
-
-
-def generate_testcases(checker_path):
-    generator = LIBRARY_CHECKER_DIRECTORY / "generate.py"
-    test_info = checker_path / "info.toml"
-    cmd = f"{generator} {test_info}"
-    subprocess.check_call(cmd, shell=True)
 
 
 def validate_output(checker_path, input, my, correct):
@@ -144,10 +62,6 @@ def produce_solution_outputs(solution_path, checker_path, output_path):
 def produce_solution_output(solution_path, testcase_path, output_path):
     cmd = f"{solution_path} < {testcase_path} > {output_path}"
     subprocess.check_call(cmd, shell=True)
-
-
-def has_pragma(path):
-    return path.open().read().startswith("#pragma once")
 
 
 def check_pragma(path):
