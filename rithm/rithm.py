@@ -26,7 +26,15 @@ def test_task(task: Task):
     outputs_path = tmp_rithm_path / "outputs"
     outputs_path.mkdir(exist_ok=True)
     solver_path = tmp_rithm_path / "solver.exe"
-    compile_solver(task.solution_path, solver_path)
+    options = Options(
+        compiler="g++",
+        std=17,
+        includes=[ALGO_PATH],
+        sanitizers=["address", "undefined"],
+        warnings=["all", "extra", "shadow"]
+    )
+    compiler = Compiler(options)
+    compiler.compile_file(task.solution_path, solver_path)
     produce_solution_outputs(solver_path, checker_path, outputs_path)
     validate_solution_outputs(checker_path, outputs_path)
 
@@ -76,6 +84,9 @@ def check_pragma(path):
 
 
 class Rithm:
+    def __init__(self):
+        pass
+
     def run_command(self, profile, compiler, filename, local_debug):
         local_debug = bool(local_debug)
         print("Rithm.run_command")
@@ -128,7 +139,7 @@ class Rithm:
 
     def test_command(self, path):
         print("Rithm.test_command")
-        return
+        # return
         path = Path(path)
         tasks = get_all_tasks(path)
         for task in tasks:
