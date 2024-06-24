@@ -6,11 +6,12 @@ import traceback
 
 from rithm.cli import *
 
+
 def main():
     parser = argparse.ArgumentParser(prog="rithm")
 
     subparsers = parser.add_subparsers()
-    
+
     add_run_command(subparsers)
     add_clean_command(subparsers)
     add_prepare_submission_command(subparsers)

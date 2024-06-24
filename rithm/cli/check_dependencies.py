@@ -14,6 +14,7 @@ def add_check_dependencies_command(subparsers):
     check_dependencies.add_argument("filename")
     check_dependencies.set_defaults(cmd=check_dependencies_command)
 
+
 def add_check_all_command(subparsers):
     check_all = subparsers.add_parser("check-all")
     check_all.add_argument("path")

@@ -3,7 +3,7 @@ from rithm.rithm import rithm
 
 def test_command(args):
     rithm.test_command(args.path)
-    
+
 
 def add_test_command(subparsers):
     test = subparsers.add_parser("test")

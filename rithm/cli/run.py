@@ -1,5 +1,6 @@
 from rithm.rithm import rithm
 
+
 def run_command(args):
     filename = args.filename
     profile = args.profile
@@ -8,7 +9,7 @@ def run_command(args):
     assert filename[-4:] == ".cpp"
 
     rithm.run_command(profile, compiler, filename, local_debug)
-    
+
 
 def add_run_command(subparsers):
     run = subparsers.add_parser("run")

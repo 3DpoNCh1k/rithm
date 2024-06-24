@@ -10,7 +10,6 @@ import subprocess
 import sys
 
 
-
 from .config import load_config
 
 from .graph import *
@@ -27,7 +26,6 @@ except KeyError:
 COMMANDS_DIRECTORY = Path(os.path.realpath(__file__)).parent
 RITHM_DIRECTORY = COMMANDS_DIRECTORY.parent.parent
 LIBRARY_CHECKER_DIRECTORY = RITHM_DIRECTORY / "library-checker-problems"
-
 
 
 def remove_pragma(text):
@@ -63,7 +61,6 @@ def expand_algo_includes(text, dependency_order):
 
     algo_text = "\n".join(algo_text_list)
     return text + "\n" + algo_text
-
 
 
 class Task:
@@ -155,8 +152,6 @@ def produce_solution_output(solution_path, testcase_path, output_path):
     subprocess.check_call(cmd, shell=True)
 
 
-
-
 def has_pragma(path):
     return path.open().read().startswith("#pragma once")
 
@@ -170,11 +165,6 @@ def check_pragma(path):
                 sys.exit(1)
 
     print("Success!")
-
-
-
-
-
 
 
 class Rithm:
@@ -206,7 +196,7 @@ class Rithm:
         file_path = Path(filename)
         print("Rithm.prepare_submission_command")
         return
-    
+
         folder = file_path.parent
 
         dependency_graph = create_graph(file_path)
@@ -225,7 +215,7 @@ class Rithm:
         new_folder_path = Path(".") / "submit" / folder.name
         new_folder_path.mkdir(parents=True, exist_ok=True)
         open(new_folder_path / f"submission_{name}", "w").write(submission_text)
-    
+
     def test_command(self, path):
         print("Rithm.test_command")
         return
@@ -233,7 +223,7 @@ class Rithm:
         tasks = get_all_tasks(path)
         for task in tasks:
             process_task(task)
-    
+
     def clean_command(self, path):
         print("Rithm.clean_command")
         return
@@ -241,12 +231,13 @@ class Rithm:
         patterns = [".*\.exe$", ".*\.exp$", ".*\.lib$", ".*\.pdb$"]
         for path, _, filenames in os.walk(path):
             to_remove = filter(
-                lambda filename: any(re.match(pattern, filename) for pattern in patterns),
+                lambda filename: any(
+                    re.match(pattern, filename) for pattern in patterns
+                ),
                 filenames,
             )
             for filename in to_remove:
                 os.remove(path + os.sep + filename)
-
 
     def check_dependencies_command(self, path):
         print("Rithm.check_dependencies_command")
@@ -258,7 +249,6 @@ class Rithm:
             print(f"Found cycle: {cycle}")
             sys.exit(1)
         print("Success!")
-
 
     def check_all_command(self, path):
         print("Rithm.check_all_command")
@@ -277,9 +267,6 @@ class Rithm:
 
         check_pragma(path)
         print("Success!")
-
-
-
 
 
 rithm = Rithm()
