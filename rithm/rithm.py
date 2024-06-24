@@ -169,9 +169,11 @@ def check_pragma(path):
 
 class Rithm:
     def run_command(self, profile, compiler, filename, local_debug):
+        local_debug = bool(local_debug)
         print("Rithm.run_command")
         return
 
+        assert filename[-4:] == ".cpp"
         executable = filename[:-4] + ".exe"
 
         config = load_config()
