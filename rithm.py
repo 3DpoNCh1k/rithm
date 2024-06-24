@@ -18,6 +18,7 @@ def main():
     add_check_dependencies_command(subparsers)
     add_check_all_command(subparsers)
     add_test_command(subparsers)
+    add_build_command(subparsers)
 
     args = parser.parse_args()
 

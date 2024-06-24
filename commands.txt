@@ -4,3 +4,4 @@ prepare-submission
 check-dependencies
 check-all
 test
+build

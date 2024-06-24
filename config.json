@@ -18,5 +18,9 @@
       },
       "localDebug": "-DLOCAL_DEBUG"
     }
+  },
+  "debug": {
+    "compiler": "g++",
+    "options": "-I ."
   }
 }

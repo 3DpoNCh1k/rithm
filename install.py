@@ -38,7 +38,12 @@ def create_activation_script():
 
 
 def update_profile():
-    with open(Path.home() / ".bashrc", "a") as file:
+    profile = Path.home() / ".bashrc"
+    with open(profile) as file:
+        if file.read().find(PROFILE_SCRIPT_TEXT):
+            return
+    
+    with open(profile, "a") as file:
         file.write(PROFILE_SCRIPT_TEXT)
 
 

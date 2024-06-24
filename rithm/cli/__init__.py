@@ -3,3 +3,4 @@ from .check_dependencies import add_check_all_command, add_check_dependencies_co
 from .clean import add_clean_command
 from .prepare_submission import add_prepare_submission_command
 from .test import add_test_command
+from .build import add_build_command

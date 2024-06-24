@@ -18,14 +18,39 @@ class Rithm:
     def __init__(self):
         self.algo = Algo(ALGO_PATH)
         self.library_checker = LibraryChecker(LIBRARY_CHECKER_DIRECTORY)
+        self.config = load_config()
+    
+
+    def build_command(self, profile, input_file, output_file):
+        assert input_file[-4:] == ".cpp"
+        profile = self.config[profile]
+        options = Options(
+            compiler=profile["compiler"],
+            others=profile["options"]
+        )
+        compiler = Compiler(options)
+        print(compiler.compilation_line)
+        print(input_file)
+        print(output_file)
+        input_path = Path(input_file)
+        assert not input_path.is_absolute()
+        if output_file is None:
+            name = os.path.splitext(input_path.name)[0]
+            folder = input_path.parent
+            build_folder = Path("build") / folder
+            build_folder.mkdir(parents=True, exist_ok=True)
+            output_file = build_folder / f"{name}.exe"
+        
+        print(output_file)
+        compiler.compile_file(input_file, output_file)
+
 
     def run_command(self, profile, compiler, filename, local_debug):
         local_debug = bool(local_debug)
         assert filename[-4:] == ".cpp"
         executable = filename[:-4] + ".exe"
 
-        config = load_config()
-        config = config["compiler"][compiler]
+        config = self.config["compiler"][compiler]
         std = config["std"]
         always_flags = config["always"]
         profile_flags = config["profiles"][profile]
