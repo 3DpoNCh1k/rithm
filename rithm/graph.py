@@ -9,12 +9,7 @@ from rithm.source_files import *
 
 from graphlib import TopologicalSorter, CycleError
 
-# TODO: handle it better
-try:
-    ALGO_PATH = Path(os.environ["ALGO_PATH"])
-except KeyError:
-    print("Set ALGO_PATH environment variable that points to algo library")
-    sys.exit(1)
+from .config import *
 
 
 def get_algo_name(path):

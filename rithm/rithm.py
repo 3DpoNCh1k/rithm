@@ -10,18 +10,12 @@ import subprocess
 import sys
 
 
-from .config import load_config
+from .config import *
 
 from .graph import *
 from .source_files import *
 
 
-# TODO: handle it better
-try:
-    ALGO_PATH = Path(os.environ["ALGO_PATH"])
-except KeyError:
-    print("Set ALGO_PATH environment variable that points to algo library")
-    sys.exit(1)
 
 COMMANDS_DIRECTORY = Path(os.path.realpath(__file__)).parent
 RITHM_DIRECTORY = COMMANDS_DIRECTORY.parent.parent
