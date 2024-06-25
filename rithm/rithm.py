@@ -12,22 +12,20 @@ from .utils import *
 from .library_checker import *
 from .algo import *
 from .compiler import *
+from .testers import *
 
 
 class Rithm:
     def __init__(self):
-        self.algo = Algo(ALGO_PATH)
+        self.algo_path = ALGO_PATH
+        self.algo = Algo(self.algo_path)
         self.library_checker = LibraryChecker(LIBRARY_CHECKER_DIRECTORY)
         self.config = load_config()
-    
 
     def build_command(self, profile, input_file, output_file):
         assert input_file[-4:] == ".cpp"
         profile = self.config[profile]
-        options = Options(
-            compiler=profile["compiler"],
-            others=profile["options"]
-        )
+        options = Options(compiler=profile["compiler"], others=profile["options"])
         compiler = Compiler(options)
         print(compiler.compilation_line)
         print(input_file)
@@ -40,10 +38,9 @@ class Rithm:
             build_folder = Path("build") / folder
             build_folder.mkdir(parents=True, exist_ok=True)
             output_file = build_folder / f"{name}.exe"
-        
+
         print(output_file)
         compiler.compile_file(input_file, output_file)
-
 
     def run_command(self, profile, compiler, filename, local_debug):
         local_debug = bool(local_debug)
@@ -133,46 +130,13 @@ class Rithm:
         print("Success!")
 
     def _process_task(self, task: Task):
-        if task.has_local_tests() and task.has_solution():
-            self._test_task(task)
-
-    def _test_task(self, task: Task):
-        problem_checker = self.library_checker.create_problem_checker(
-            Path(task["library-checker-problems"])
-        )
-        problem_checker.generate_testcases()
-
-        options = Options(
-            compiler="g++",
-            std=17,
-            includes=[ALGO_PATH],
-            sanitizers=["address", "undefined"],
-            warnings=["all", "extra", "shadow"],
-        )
-        compiler = Compiler(options)
-
-        with tempfile.TemporaryDirectory() as temporary_build_directory:
-            build_path = Path(temporary_build_directory)
-            outputs_path = build_path / "outputs"
-            outputs_path.mkdir(exist_ok=True)
-            solver_path = build_path / "solver"
-            compiler.compile_file(task.solution_path, solver_path)
-            self._produce_solution_outputs(solver_path, problem_checker, outputs_path)
-            problem_checker.validate_testcases(outputs_path)
-
-    def _produce_solution_outputs(self, solution_path, problem_checker, output_path):
-        print("produce_solution_outputs")
-        for testcase in problem_checker.get_testcases():
-            name = testcase.name[:-3]
-            my_output = output_path / f"{name}.out"
-            self._produce_solution_output(solution_path, testcase, my_output)
-
-    def _produce_solution_output(self, solution_path, testcase_path, output_path):
-        self._run(solution_path, testcase_path, output_path)
-
-    def _run(self, program, input_file, output_file):
-        cmd = f"{program} < {input_file} > {output_file}"
-        subprocess.check_call(cmd, shell=True)
+        if task.has_library_checker_tests() and task.has_library_checker_solution():
+            tester = LibraryCheckerTester(self.algo_path, self.library_checker)
+            tester.test(task)
+        
+        if task.has_local_tests():
+            tester = Tester(self.algo_path)
+            tester.test(task)
 
 
 rithm = Rithm()

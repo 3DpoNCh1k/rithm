@@ -15,15 +15,22 @@ class Task:
     def __repr__(self):
         return str(self._path)
 
-    def has_local_tests(self):
+    def has_library_checker_tests(self):
         return "library-checker-problems" in self._content
 
-    def has_solution(self):
+    def has_library_checker_solution(self):
         return "solution" in self._content
+    
+    def has_local_tests(self):
+        return "target" in self._content
 
     @property
     def solution_path(self):
         return self._path.parent / self._content["solution"]
+
+    @property
+    def target_path(self):
+        return self._path.parent / self._content["target"]
 
 
 class Algo:
