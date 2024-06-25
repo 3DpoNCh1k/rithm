@@ -42,30 +42,25 @@ class Rithm:
         print(output_file)
         compiler.compile_file(input_file, output_file)
 
-    def run_command(self, profile, compiler, filename, local_debug):
-        local_debug = bool(local_debug)
+    def run_command(self, profile, filename, input_file):
         assert filename[-4:] == ".cpp"
-        executable = filename[:-4] + ".exe"
 
-        config = self.config["compiler"][compiler]
-        std = config["std"]
-        always_flags = config["always"]
-        profile_flags = config["profiles"][profile]
-        debug_flags = config["localDebug"] if local_debug else ""
-
-        cmd_line = f"--std={std} {always_flags} {profile_flags} {debug_flags}"
-
-        options = Options(compiler=compiler, others=cmd_line)
-
+        profile = self.config[profile]
+        options = Options(
+            compiler=profile["compiler"],
+            others=profile["options"],
+            includes=[self.algo_path],
+        )
         compiler = Compiler(options)
         print(compiler.compilation_line)
 
-        if os.path.exists(executable):
-            os.remove(executable)
+        with tempfile.TemporaryDirectory() as temporary_run_directory:
+            run_path = Path(temporary_run_directory)
+            solver_path = run_path / "solver"
+            compiler.compile_file(filename, solver_path)
+            cmd = f"{solver_path} < {input_file}"
+            subprocess.check_call(cmd, shell=True)
 
-        compiler.compile_file(filename, executable)
-        res = subprocess.run(executable, shell=True, check=True)
-        assert res.returncode == 0
         print("Success!")
 
     def prepare_submission_command(self, filename):
@@ -133,7 +128,7 @@ class Rithm:
         if task.has_library_checker_tests() and task.has_library_checker_solution():
             tester = LibraryCheckerTester(self.algo_path, self.library_checker)
             tester.test(task)
-        
+
         if task.has_local_tests():
             tester = Tester(self.algo_path)
             tester.test(task)

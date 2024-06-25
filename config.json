@@ -21,6 +21,6 @@
   },
   "debug": {
     "compiler": "g++",
-    "options": "-I ."
+    "options": "-DLOCAL_DEBUG"
   }
 }
