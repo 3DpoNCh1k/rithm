@@ -14,6 +14,7 @@ def create_default_compiler(algo_path):
         includes=[algo_path],
         sanitizers=["address", "undefined"],
         warnings=["all", "extra", "shadow"],
+        others="-O2"
     )
     return Compiler(options)
 
