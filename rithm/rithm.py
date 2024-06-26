@@ -78,6 +78,12 @@ class Rithm:
         tasks = self.algo.get_all_tasks(path)
         for task in tasks:
             self._process_task(task)
+    
+    def test_task_command(self, path, testcase):
+        path = Path(path)
+        print(testcase)
+        task = self.algo.get_task(path)
+        self._process_task(task, testcase)
 
     def clean_command(self, path):
         path = Path(path).absolute()
@@ -124,14 +130,14 @@ class Rithm:
 
         print("Success!")
 
-    def _process_task(self, task: Task):
+    def _process_task(self, task: Task, testcase=None):
         if task.has_library_checker_tests() and task.has_library_checker_solution():
             tester = LibraryCheckerTester(self.algo_path, self.library_checker)
-            tester.test(task)
+            tester.test(task, testcase)
 
         if task.has_local_tests():
             tester = Tester(self.algo_path)
-            tester.test(task)
+            tester.test(task, testcase)
 
 
 rithm = Rithm()

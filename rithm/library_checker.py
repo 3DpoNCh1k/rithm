@@ -23,8 +23,11 @@ class ProblemChecker:
         print(f"Validation {testcase.name}")
         subprocess.check_call(cmd, shell=True)
 
-    def validate_testcases(self, outputs_path):
-        for testcase in self.get_testcases():
+    def validate_testcases(self, outputs_path, testcase=None):
+        testcases = self.get_testcases()
+        if testcase is not None:
+            testcases = list(filter(lambda path: path.name == testcase, testcases))
+        for testcase in testcases:
             self.validate_testcase(
                 testcase, self.corresponding_output(outputs_path, testcase)
             )

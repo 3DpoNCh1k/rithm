@@ -40,6 +40,9 @@ class Algo:
     def get_all_tasks(self, search_path):
         return list(map(lambda path: Task(path), search_path.glob("**/task.json")))
 
+    def get_task(self, path):
+        return Task(path)
+
     def expand_includes(self, text, dependency_order):
         algo_text_list = []
         for file_node in dependency_order:
