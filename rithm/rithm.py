@@ -13,6 +13,8 @@ from .library_checker import *
 from .algo import *
 from .compiler import *
 from .testers import *
+from .secrets import *
+from .codeforces import *
 
 
 class Rithm:
@@ -21,6 +23,8 @@ class Rithm:
         self.algo = Algo(self.algo_path)
         self.library_checker = LibraryChecker(LIBRARY_CHECKER_DIRECTORY)
         self.config = load_config()
+        self.secrets = load_secrets()
+        self.codeforces = Codeforces(self.secrets['codeforces']['handle'], self.secrets['codeforces']['password'])
 
     def build_command(self, profile, input_file, output_file):
         assert input_file[-4:] == ".cpp"
@@ -131,12 +135,16 @@ class Rithm:
         print("Success!")
 
     def _process_task(self, task: Task, testcase=None):
-        if task.has_library_checker_tests() and task.has_library_checker_solution():
+        if task.has_library_checker_tests() and task.has_solution():
             tester = LibraryCheckerTester(self.algo_path, self.library_checker)
             tester.test(task, testcase)
 
         if task.has_local_tests():
             tester = Tester(self.algo_path)
+            tester.test(task, testcase)
+        
+        if task.has_link() and task.has_solution():
+            tester = CodeforcesTester(self.algo, self.codeforces)
             tester.test(task, testcase)
 
 

@@ -213,6 +213,7 @@ pyrightconfig.json
 # development
 .vscode/
 submit/
+secrets.json
 
 # installation
 bin/

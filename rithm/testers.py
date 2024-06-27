@@ -1,11 +1,14 @@
 
 
 from pathlib import Path
+import sys
 import tempfile
 
 from .algo import Task
 from .library_checker import LibraryChecker, ProblemChecker
 from .compiler import *
+from .codeforces import Codeforces, Verdict
+from .algo import Algo
 
 def create_default_compiler(algo_path):
     options = Options(
@@ -73,3 +76,20 @@ class LibraryCheckerTester:
     def _run(self, program, input_file, output_file):
         cmd = f"{program} < {input_file} > {output_file}"
         subprocess.check_call(cmd, shell=True)
+    
+
+class CodeforcesTester:
+    def __init__(self, algo: Algo, codeforces: Codeforces):
+        self.algo = algo
+        self.codeforces = codeforces
+    
+    def test(self, task: Task, testcase=None):
+        submission_text = self.algo.create_submission_text(task.solution_path)
+        with tempfile.TemporaryDirectory() as temporary_build_directory:
+            build_path = Path(temporary_build_directory)
+            submission_path = build_path / "submission.cpp"
+            submission_path.open("w").write(submission_text)
+            result = self.codeforces.test_solution(task['link'], submission_path)
+            print(result)
+            if result != Verdict.AC:
+                sys.exit(1)

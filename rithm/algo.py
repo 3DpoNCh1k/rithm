@@ -18,11 +18,14 @@ class Task:
     def has_library_checker_tests(self):
         return "library-checker-problems" in self._content
 
-    def has_library_checker_solution(self):
+    def has_solution(self):
         return "solution" in self._content
     
     def has_local_tests(self):
         return "target" in self._content
+    
+    def has_link(self):
+        return "link" in self._content
 
     @property
     def solution_path(self):
