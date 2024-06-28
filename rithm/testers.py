@@ -92,4 +92,6 @@ class CodeforcesTester:
             result = self.codeforces.test_solution(task['link'], submission_path)
             print(result)
             if result != Verdict.AC:
+                print("Failed")
                 sys.exit(1)
+            print("Accepted!")
