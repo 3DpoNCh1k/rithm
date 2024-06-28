@@ -1,13 +1,13 @@
-from pathlib import Path
-import sys
 import os
+import sys
+from pathlib import Path
 
 print(sys.path)
 print(os.getcwd())
 
-from rithm.source_files import *
+from graphlib import CycleError, TopologicalSorter
 
-from graphlib import TopologicalSorter, CycleError
+from rithm.source_files import *
 
 from .config import *
 

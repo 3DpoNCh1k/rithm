@@ -1,8 +1,7 @@
 import json
 import os
-from pathlib import Path
 import sys
-
+from pathlib import Path
 
 # TODO: handle it better
 try:
@@ -17,6 +16,6 @@ CONFIG_DIRECTORY = Path(os.path.realpath(__file__)).parent
 RITHM_DIRECTORY = CONFIG_DIRECTORY.parent
 LIBRARY_CHECKER_DIRECTORY = RITHM_DIRECTORY / "library-checker-problems"
 
+
 def load_config():
     return json.load(open(RITHM_DIRECTORY / "config.json"))
-

@@ -1,5 +1,5 @@
-from os.path import splitext
 import re
+from os.path import splitext
 
 
 class SourceFile:

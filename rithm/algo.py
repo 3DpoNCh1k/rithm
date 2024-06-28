@@ -1,6 +1,7 @@
 import json
 
 from rithm.graph import create_graph, get_topological_order
+
 from .utils import *
 
 
@@ -20,10 +21,10 @@ class Task:
 
     def has_solution(self):
         return "solution" in self._content
-    
+
     def has_local_tests(self):
         return "target" in self._content
-    
+
     def has_link(self):
         return "link" in self._content
 

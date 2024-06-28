@@ -1,20 +1,19 @@
 import os
-import subprocess
-from pathlib import Path
 import re
+import subprocess
 import sys
 import tempfile
+from pathlib import Path
 
-
+from .algo import *
+from .codeforces import *
+from .compiler import *
 from .config import *
 from .graph import *
-from .utils import *
 from .library_checker import *
-from .algo import *
-from .compiler import *
-from .testers import *
 from .secrets import *
-from .codeforces import *
+from .testers import *
+from .utils import *
 
 
 class Rithm:
@@ -24,7 +23,9 @@ class Rithm:
         self.library_checker = LibraryChecker(LIBRARY_CHECKER_DIRECTORY)
         self.config = load_config()
         self.secrets = load_secrets()
-        self.codeforces = Codeforces(self.secrets['codeforces']['handle'], self.secrets['codeforces']['password'])
+        self.codeforces = Codeforces(
+            self.secrets["codeforces"]["handle"], self.secrets["codeforces"]["password"]
+        )
 
     def build_command(self, profile, input_file, output_file):
         assert input_file[-4:] == ".cpp"
@@ -82,7 +83,7 @@ class Rithm:
         tasks = self.algo.get_all_tasks(path)
         for task in tasks:
             self._process_task(task)
-    
+
     def test_task_command(self, path, testcase):
         path = Path(path)
         print(testcase)
@@ -142,7 +143,7 @@ class Rithm:
         if task.has_local_tests():
             tester = Tester(self.algo_path)
             tester.test(task, testcase)
-        
+
         if task.has_link() and task.has_solution():
             tester = CodeforcesTester(self.algo, self.codeforces)
             tester.test(task, testcase)

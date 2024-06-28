@@ -42,7 +42,7 @@ def update_profile():
     with open(profile) as file:
         if file.read().find(PROFILE_SCRIPT_TEXT):
             return
-    
+
     with open(profile, "a") as file:
         file.write(PROFILE_SCRIPT_TEXT)
 

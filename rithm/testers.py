@@ -1,14 +1,12 @@
-
-
-from pathlib import Path
 import sys
 import tempfile
+from pathlib import Path
 
-from .algo import Task
-from .library_checker import LibraryChecker, ProblemChecker
-from .compiler import *
+from .algo import Algo, Task
 from .codeforces import Codeforces, Verdict
-from .algo import Algo
+from .compiler import *
+from .library_checker import LibraryChecker, ProblemChecker
+
 
 def create_default_compiler(algo_path):
     options = Options(
@@ -17,17 +15,18 @@ def create_default_compiler(algo_path):
         includes=[algo_path],
         sanitizers=["address", "undefined"],
         warnings=["all", "extra", "shadow"],
-        others="-O2"
+        others="-O2",
     )
     return Compiler(options)
+
 
 class Tester:
     def __init__(self, algo_path):
         self.algo_path = algo_path
-    
+
     def test(self, task: Task, testcase=None):
         compiler = create_default_compiler(self.algo_path)
-        
+
         with tempfile.TemporaryDirectory() as temporary_build_directory:
             build_path = Path(temporary_build_directory)
             test_runner_path = build_path / "test_runner"
@@ -36,7 +35,7 @@ class Tester:
             print(cmd)
             subprocess.check_call(cmd, shell=True)
             print("Success!")
-            
+
 
 class LibraryCheckerTester:
     def __init__(self, algo_path, library_checker: LibraryChecker):
@@ -50,17 +49,21 @@ class LibraryCheckerTester:
         problem_checker.generate_testcases()
 
         compiler = create_default_compiler(self.algo_path)
-        
+
         with tempfile.TemporaryDirectory() as temporary_build_directory:
             build_path = Path(temporary_build_directory)
             outputs_path = build_path / "outputs"
             outputs_path.mkdir(exist_ok=True)
             solver_path = build_path / "solver"
             compiler.compile_file(task.solution_path, solver_path)
-            self._produce_solution_outputs(solver_path, problem_checker, outputs_path, testcase)
+            self._produce_solution_outputs(
+                solver_path, problem_checker, outputs_path, testcase
+            )
             problem_checker.validate_testcases(outputs_path, testcase)
 
-    def _produce_solution_outputs(self, solution_path, problem_checker: ProblemChecker, output_path, testcase=None):
+    def _produce_solution_outputs(
+        self, solution_path, problem_checker: ProblemChecker, output_path, testcase=None
+    ):
         print("produce_solution_outputs")
         testcases = problem_checker.get_testcases()
         if testcase is not None:
@@ -76,20 +79,20 @@ class LibraryCheckerTester:
     def _run(self, program, input_file, output_file):
         cmd = f"{program} < {input_file} > {output_file}"
         subprocess.check_call(cmd, shell=True)
-    
+
 
 class CodeforcesTester:
     def __init__(self, algo: Algo, codeforces: Codeforces):
         self.algo = algo
         self.codeforces = codeforces
-    
+
     def test(self, task: Task, testcase=None):
         submission_text = self.algo.create_submission_text(task.solution_path)
         with tempfile.TemporaryDirectory() as temporary_build_directory:
             build_path = Path(temporary_build_directory)
             submission_path = build_path / "submission.cpp"
             submission_path.open("w").write(submission_text)
-            result = self.codeforces.test_solution(task['link'], submission_path)
+            result = self.codeforces.test_solution(task["link"], submission_path)
             print(result)
             if result != Verdict.AC:
                 print("Failed")

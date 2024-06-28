@@ -1,6 +1,6 @@
+import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
-import subprocess
 
 
 @dataclass
