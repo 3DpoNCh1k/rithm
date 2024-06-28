@@ -12,17 +12,17 @@ class Verdict(Enum):
     @staticmethod
     def from_string(s: str):
         s = s.lower()
-        if s == "accepted":
+        if "accepted" in s:
             return Verdict.AC
-        if s == "wrong answer":
+        if "wrong answer" in s:
             return Verdict.WA
-        if s == "runtime error":
+        if "runtime error" in s:
             return Verdict.RE
-        if s == "memory limit exceeded":
+        if "memory limit exceeded" in s:
             return Verdict.MLE
-        if s == "time limit exceeded":
+        if "time limit exceeded" in s:
             return Verdict.TLE
-        if s == "compilation error":
+        if "compilation error" in s:
             return Verdict.CE
 
         raise ValueError(f"Unknown verdict {s}")
