@@ -22,5 +22,9 @@
   "debug": {
     "compiler": "g++",
     "options": "-DLOCAL_DEBUG"
+  },
+  "release": {
+    "compiler": "g++",
+    "options": ""
   }
 }
