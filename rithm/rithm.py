@@ -30,7 +30,11 @@ class Rithm:
     def build_command(self, profile, input_file, output_file):
         assert input_file[-4:] == ".cpp"
         profile = self.config[profile]
-        options = Options(compiler=profile["compiler"], others=profile["options"])
+        options = Options(
+            compiler=profile["compiler"],
+            others=profile["options"],
+            includes=[self.algo_path],
+        )
         compiler = Compiler(options)
         print(compiler.compilation_line)
         print(input_file)
