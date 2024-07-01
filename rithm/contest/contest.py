@@ -1,13 +1,15 @@
 import os
+import shutil
 from pathlib import Path
+
+from rithm.utils import get_files_from_directory
 
 CONTEST_DIRECTORY = Path(os.path.realpath(__file__)).parent
 
 
 class Contest:
     def __init__(self):
-        template_path = CONTEST_DIRECTORY / "template.cpp"
-        self.main_template = template_path.open().read()
+        pass
 
     def create_problems(self, problems: list[str]):
         for problem in problems:
@@ -23,5 +25,10 @@ class Contest:
         examples_path.mkdir()
         inputs_path.mkdir()
         outputs_path.mkdir()
-        main_program_path = problem_path / "main.cpp"
-        main_program_path.open("w").write(self.main_template)
+
+        for file in get_files_from_directory(self.templates_path):
+            shutil.copy(file, problem_path)
+
+    @property
+    def templates_path(self):
+        return CONTEST_DIRECTORY / "templates"

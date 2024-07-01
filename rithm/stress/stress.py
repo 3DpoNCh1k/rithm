@@ -3,6 +3,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from rithm.utils import get_files_from_directory
+
 STRESS_DIRECTORY = Path(os.path.realpath(__file__)).parent
 
 
@@ -14,7 +16,7 @@ class Stress:
         current_path = Path(".")
         stress_path = current_path / "stress"
         stress_path.mkdir()
-        for file in self.template_files():
+        for file in get_files_from_directory(self.templates_path):
             shutil.copy(file, stress_path)
 
     def run(self):
@@ -27,6 +29,3 @@ class Stress:
     @property
     def templates_path(self):
         return STRESS_DIRECTORY / "templates"
-
-    def template_files(self):
-        return filter(lambda path: path.is_file(), self.templates_path.iterdir())

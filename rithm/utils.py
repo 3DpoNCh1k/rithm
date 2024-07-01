@@ -1,4 +1,5 @@
 import re
+from pathlib import Path
 
 
 def remove_pragma(text):
@@ -26,3 +27,8 @@ def add_std_includes(text, std_dependencies):
 
 def has_pragma(path):
     return path.open().read().startswith("#pragma once")
+
+
+def get_files_from_directory(path: Path):
+    assert path.is_dir()
+    return list(filter(lambda path: path.is_file(), path.iterdir()))
