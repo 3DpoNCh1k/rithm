@@ -9,9 +9,11 @@ from .algo import *
 from .codeforces import *
 from .compiler import *
 from .config import *
+from .contest import *
 from .graph import *
 from .library_checker import *
 from .secrets import *
+from .stress import *
 from .testers import *
 from .utils import *
 
@@ -26,6 +28,8 @@ class Rithm:
         self.codeforces = Codeforces(
             self.secrets["codeforces"]["handle"], self.secrets["codeforces"]["password"]
         )
+        self.contest = Contest()
+        self.stress = Stress()
 
     def build_command(self, profile, input_file, output_file):
         assert input_file[-4:] == ".cpp"
@@ -121,6 +125,15 @@ class Rithm:
 
         self._check_pragma(path)
         print("Success!")
+
+    def stress_create_command(self):
+        self.stress.create()
+
+    def stress_run_command(self):
+        self.stress.run()
+
+    def contest_create_command(self, problems):
+        self.contest.create_problems(problems)
 
     def _check_dependency_cycle(self, file_path):
         g = create_graph(file_path)

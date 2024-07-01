@@ -6,3 +6,5 @@ check-all
 test
 test-task
 build
+stress
+contest
