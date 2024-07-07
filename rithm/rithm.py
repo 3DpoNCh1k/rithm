@@ -152,16 +152,16 @@ class Rithm:
 
         print("Success!")
 
-    def _process_task(self, task: Task, testcase=None):
-        if task.has_library_checker_tests() and task.has_solution():
+    def _process_task(self, task, testcase=None):
+        if isinstance(task, LibraryCheckerTask):
             tester = LibraryCheckerTester(self.algo_path, self.library_checker)
             tester.test(task, testcase)
 
-        if task.has_local_tests():
+        if isinstance(task, TestTask):
             tester = Tester(self.algo_path)
             tester.test(task, testcase)
 
-        if task.has_link() and task.has_solution():
+        if isinstance(task, CodeforcesTask):
             tester = CodeforcesTester(self.algo, self.codeforces)
             tester.test(task, testcase)
 

@@ -1,40 +1,7 @@
-import json
-
 from rithm.graph import create_graph, get_topological_order
 
+from .task import *
 from .utils import *
-
-
-class Task:
-    def __init__(self, path):
-        self._path = path
-        self._content = json.load(path.open())
-
-    def __getitem__(self, key):
-        return self._content.get(key)
-
-    def __repr__(self):
-        return str(self._path)
-
-    def has_library_checker_tests(self):
-        return "library-checker-problems" in self._content
-
-    def has_solution(self):
-        return "solution" in self._content
-
-    def has_local_tests(self):
-        return "target" in self._content
-
-    def has_link(self):
-        return "link" in self._content
-
-    @property
-    def solution_path(self):
-        return self._path.parent / self._content["solution"]
-
-    @property
-    def target_path(self):
-        return self._path.parent / self._content["target"]
 
 
 class Algo:
@@ -42,10 +9,24 @@ class Algo:
         self.path = path
 
     def get_all_tasks(self, search_path):
-        return list(map(lambda path: Task(path), search_path.glob("**/task.json")))
+        return list(map(self.get_task, search_path.glob("**/task.json")))
 
     def get_task(self, path):
-        return Task(path)
+        task = Task(path)
+        if "library-checker-problems" in task and "solution" in task:
+            return LibraryCheckerTask(
+                task["link"],
+                Path(task["library-checker-problems"]),
+                task.directory / task["solution"],
+            )
+        if "target" in task:
+            return TestTask(task.directory / task["target"])
+        if (
+            "link" in task
+            and task["link"].startswith("https://codeforces.com")
+            and "solution" in task
+        ):
+            return CodeforcesTask(task["link"], task.directory / task["solution"])
 
     def expand_includes(self, text, dependency_order):
         algo_text_list = []

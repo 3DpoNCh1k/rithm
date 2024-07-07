@@ -35,3 +35,15 @@ class Compiler:
         with_extra_spaces = f"{self.options.compiler} {standard_line} {includes_line} {warnings_line} {sanitizers_line} {self.options.others}"
         without_extra_spaces = " ".join(with_extra_spaces.split())
         return without_extra_spaces
+
+
+def create_default_compiler(algo_path):
+    options = Options(
+        compiler="g++",
+        std=17,
+        includes=[algo_path],
+        sanitizers=["address", "undefined"],
+        warnings=["all", "extra", "shadow"],
+        others="-O2",
+    )
+    return Compiler(options)

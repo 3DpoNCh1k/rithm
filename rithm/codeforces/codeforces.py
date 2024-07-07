@@ -16,7 +16,7 @@ class Codeforces:
             group, contest, problem = re.search(pattern, problem_link).groups()
             problem_info = ProblemInfo(group, contest, problem)
         except:
-            print(f"Currenlt only the following format is supported: {pattern}")
+            print(f"Currently only the following format is supported: {pattern}")
             sys.exit(1)
 
         print(problem_info)
