@@ -8,8 +8,11 @@ class Algo:
     def __init__(self, path):
         self.path = path
 
-    def get_all_tasks(self, search_path):
-        return list(map(self.get_task, search_path.glob("**/task.json")))
+    def get_all_tasks(self, search_path, task_type):
+        tasks = map(self.get_task, search_path.glob("**/task.json"))
+        if task_type is not None:
+            tasks = filter(lambda task: isinstance(task, task_type), tasks)
+        return list(tasks)
 
     def get_task(self, path):
         task = Task(path)

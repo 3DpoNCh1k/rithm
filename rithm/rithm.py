@@ -86,9 +86,18 @@ class Rithm:
         new_folder_path.mkdir(parents=True, exist_ok=True)
         open(new_folder_path / f"submission_{name}", "w").write(submission_text)
 
-    def test_command(self, path):
+    def test_command(self, path, type):
         path = Path(path)
-        tasks = self.algo.get_all_tasks(path)
+
+        target_class = None
+        if type == "local":
+            target_class = TestTask
+        if type == "library-checker":
+            target_class = LibraryCheckerTask
+        if type == "codeforces":
+            target_class = CodeforcesTask
+
+        tasks = self.algo.get_all_tasks(path, target_class)
         for task in tasks:
             self._process_task(task)
 
