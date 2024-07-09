@@ -71,7 +71,7 @@ class Rithm:
             run_path = Path(temporary_run_directory)
             solver_path = run_path / "solver"
             compiler.compile_file(filename, solver_path)
-            cmd = f"{solver_path}" + ("" if input_file is None else " < {input_file}")
+            cmd = f"{solver_path}" + ("" if input_file is None else f" < {input_file}")
             subprocess.check_call(cmd, shell=True)
 
         print("Success!")
