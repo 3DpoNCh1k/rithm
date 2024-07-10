@@ -15,10 +15,6 @@ from .config import *
 def get_algo_name(path):
     path = path.absolute()
     algo_path = path.relative_to(ALGO_PATH)
-    if algo_path.parts[0] == "algo":
-        path_in_algo = Path(*algo_path.parts[1:])
-        return str(path_in_algo)
-
     return str(algo_path)
 
 

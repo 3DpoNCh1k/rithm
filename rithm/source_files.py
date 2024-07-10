@@ -2,7 +2,7 @@ import re
 from os.path import splitext
 
 
-class SourceFile:
+class File:
     def __init__(self, path):
         self.path = path
 
@@ -25,7 +25,7 @@ class SourceFile:
         return str(self.path.absolute())
 
 
-class CppFile(SourceFile):
+class CppFile(File):
     extensions = ("cpp", "hpp", "h")
 
     def __init__(self, path):

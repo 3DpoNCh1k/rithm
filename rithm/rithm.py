@@ -122,6 +122,9 @@ class Rithm:
                 self._check_dependency_cycle(file_path)
 
         self._check_pragma(path)
+
+        self.algo.check_extensions()
+        self.algo.check_include_all()
         print("Success!")
 
     def stress_create_command(self):
