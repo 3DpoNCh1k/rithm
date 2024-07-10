@@ -34,7 +34,7 @@ class Rithm:
     def build_command(self, profile, input_file, output_file):
         assert input_file[-4:] == ".cpp"
         profile = self.config[profile]
-        compiler = create_compiler(self.config[profile])
+        compiler = create_compiler(self.algo_path, self.config[profile])
         print(compiler.compilation_line)
         print(input_file)
         print(output_file)
@@ -53,7 +53,7 @@ class Rithm:
     def run_command(self, profile, filename, input_file):
         assert filename[-4:] == ".cpp"
 
-        compiler = create_compiler(self.config[profile])
+        compiler = create_compiler(self.algo_path, self.config[profile])
         print(compiler.compilation_line)
 
         with tempfile.TemporaryDirectory() as temporary_run_directory:
