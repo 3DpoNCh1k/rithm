@@ -19,12 +19,41 @@
       "localDebug": "-DLOCAL_DEBUG"
     }
   },
-  "debug": {
+  "ProfileTemplate": {
     "compiler": "g++",
-    "options": "-DLOCAL_DEBUG"
+    "std": 17,
+    "includes": [],
+    "warnings": ["all", "extra", "shadow"],
+    "optimization": "0",
+    "sanitizers": ["address", "undefined"],
+    "others": ""
   },
-  "release": {
+  "ReleaseLocalDebug": {
     "compiler": "g++",
-    "options": ""
+    "std": 17,
+    "includes": [],
+    "warnings": ["all", "extra", "shadow"],
+    "optimization": "2",
+    "others": "-static -DLOCAL_DEBUG"
+  },
+  "Release": {
+    "compiler": "g++",
+    "std": 17,
+    "warnings": ["all", "extra", "shadow"],
+    "optimization": "2",
+    "others": "-static"
+  },
+  "DebugLocalDebug": {
+    "compiler": "g++",
+    "std": 17,
+    "warnings": ["all", "extra", "shadow"],
+    "sanitizers": ["address", "undefined"],
+    "others": "-DLOCAL_DEBUG"
+  },
+  "Debug": {
+    "compiler": "g++",
+    "std": 17,
+    "warnings": ["all", "extra", "shadow"],
+    "sanitizers": ["address", "undefined"]
   }
 }

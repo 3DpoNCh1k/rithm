@@ -2,16 +2,17 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from rithm.compiler import create_default_compiler
+from rithm.compiler import create_compiler
 from rithm.task import TestTask
 
 
 class Tester:
-    def __init__(self, algo_path):
+    def __init__(self, algo_path, config):
         self.algo_path = algo_path
+        self.config = config
 
     def test(self, task: TestTask, testcase=None):
-        compiler = create_default_compiler(self.algo_path)
+        compiler = create_compiler(self.algo_path, self.config[task.profile])
 
         with tempfile.TemporaryDirectory() as temporary_build_directory:
             build_path = Path(temporary_build_directory)

@@ -8,6 +8,7 @@ class Options:
     compiler: str
     std: int = None
     includes: list[Path] = field(default_factory=list)
+    optimization: str = "0"
     sanitizers: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     others: str = ""
@@ -46,4 +47,10 @@ def create_default_compiler(algo_path):
         warnings=["all", "extra", "shadow"],
         others="-O2",
     )
+    return Compiler(options)
+
+
+def create_compiler(algo_path, profile):
+    options = Options(**profile)
+    options.includes += [algo_path]
     return Compiler(options)

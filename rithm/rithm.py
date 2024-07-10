@@ -34,12 +34,7 @@ class Rithm:
     def build_command(self, profile, input_file, output_file):
         assert input_file[-4:] == ".cpp"
         profile = self.config[profile]
-        options = Options(
-            compiler=profile["compiler"],
-            others=profile["options"],
-            includes=[self.algo_path],
-        )
-        compiler = Compiler(options)
+        compiler = create_compiler(self.config[profile])
         print(compiler.compilation_line)
         print(input_file)
         print(output_file)
@@ -58,13 +53,7 @@ class Rithm:
     def run_command(self, profile, filename, input_file):
         assert filename[-4:] == ".cpp"
 
-        profile = self.config[profile]
-        options = Options(
-            compiler=profile["compiler"],
-            others=profile["options"],
-            includes=[self.algo_path],
-        )
-        compiler = Compiler(options)
+        compiler = create_compiler(self.config[profile])
         print(compiler.compilation_line)
 
         with tempfile.TemporaryDirectory() as temporary_run_directory:
@@ -104,8 +93,8 @@ class Rithm:
     def test_task_command(self, path, testcase):
         path = Path(path)
         print(testcase)
-        task = self.algo.get_task(path)
-        self._process_task(task, testcase)
+        for task in self.algo.get_subtasks(path):
+            self._process_task(task, testcase)
 
     def clean_command(self, path):
         path = Path(path).absolute()
@@ -167,7 +156,7 @@ class Rithm:
             tester.test(task, testcase)
 
         if isinstance(task, TestTask):
-            tester = Tester(self.algo_path)
+            tester = Tester(self.algo_path, self.config)
             tester.test(task, testcase)
 
         if isinstance(task, CodeforcesTask):
