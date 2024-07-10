@@ -9,27 +9,54 @@ class Algo:
         self.path = path
 
     def get_all_tasks(self, search_path, task_type):
-        tasks = map(self.get_task, search_path.glob("**/task.json"))
+        tasks_list = map(self.get_subtasks, search_path.glob("**/task.json"))
+        tasks = [task for tasks in tasks_list for task in tasks]
         if task_type is not None:
             tasks = filter(lambda task: isinstance(task, task_type), tasks)
         return list(tasks)
 
-    def get_task(self, path):
+    def get_subtasks(self, path):
         task = Task(path)
+        if "library-checker-task" in task:
+            directory = task.directory
+            task = task["library-checker-task"]
+            link = task["link"]
+            path = Path(task["path"])
+            return [
+                LibraryCheckerTask(
+                    link, path, directory / target["solution"], target["profile"]
+                )
+                for target in task["targets"]
+            ]
+
+        if "tests-task" in task:
+            directory = task.directory
+            task = task["tests-task"]
+            return [
+                TestTask(
+                    directory / test["target"],
+                    test["profile"],
+                )
+                for test in task["tests"]
+            ]
+
+        # old formats
         if "library-checker-problems" in task and "solution" in task:
-            return LibraryCheckerTask(
-                task["link"],
-                Path(task["library-checker-problems"]),
-                task.directory / task["solution"],
-            )
+            return [
+                LibraryCheckerTask(
+                    task["link"],
+                    Path(task["library-checker-problems"]),
+                    task.directory / task["solution"],
+                )
+            ]
         if "target" in task:
-            return TestTask(task.directory / task["target"])
+            return [TestTask(task.directory / task["target"])]
         if (
             "link" in task
             and task["link"].startswith("https://codeforces.com")
             and "solution" in task
         ):
-            return CodeforcesTask(task["link"], task.directory / task["solution"])
+            return [CodeforcesTask(task["link"], task.directory / task["solution"])]
 
     def expand_includes(self, text, dependency_order):
         algo_text_list = []

@@ -34,8 +34,10 @@ class LibraryCheckerTask:
     link: str
     problem_path: Path
     solution_path: Path
+    profile: str = ""
 
 
 @dataclass
 class TestTask:
     target: Path
+    profile: str = ""
