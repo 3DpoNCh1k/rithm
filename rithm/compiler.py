@@ -29,11 +29,12 @@ class Compiler:
     def compilation_line(self):
         includes_line = " ".join(f"-I {path}" for path in self.options.includes)
         warnings_line = " ".join(f"-W{warning}" for warning in self.options.warnings)
+        optimization_line = f"-O{self.options.optimization}"
         sanitizers_line = " ".join(
             f"-fsanitize={sanitizer}" for sanitizer in self.options.sanitizers
         )
         standard_line = f"--std=c++{self.options.std}" if self.options.std else ""
-        with_extra_spaces = f"{self.options.compiler} {standard_line} {includes_line} {warnings_line} {sanitizers_line} {self.options.others}"
+        with_extra_spaces = f"{self.options.compiler} {standard_line} {includes_line} {warnings_line} {optimization_line} {sanitizers_line} {self.options.others}"
         without_extra_spaces = " ".join(with_extra_spaces.split())
         return without_extra_spaces
 
