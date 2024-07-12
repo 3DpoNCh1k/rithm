@@ -44,9 +44,9 @@ def create_default_compiler(algo_path):
         compiler="g++",
         std=17,
         includes=[algo_path],
+        optimization="2",
         sanitizers=["address", "undefined"],
         warnings=["all", "extra", "shadow"],
-        others="-O2",
     )
     return Compiler(options)
 
