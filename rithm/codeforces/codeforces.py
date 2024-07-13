@@ -1,5 +1,6 @@
 import re
 import sys
+from pathlib import Path
 
 from .problem_info import ProblemInfo
 from .robobrowser_cf import RobobrowserCodeforces
@@ -10,7 +11,7 @@ class Codeforces:
     def __init__(self, handle, password):
         self.impl = SeleniumCodeforces(handle, password)
 
-    def test_solution(self, problem_link, solution_path):
+    def test_solution(self, problem_link, solution: Path):
         try:
             pattern = r"https://codeforces.com/group/(?P<group>.*)/contest/(?P<contest>.*)/problem/(?P<problem>.*)"
             group, contest, problem = re.search(pattern, problem_link).groups()
@@ -23,7 +24,7 @@ class Codeforces:
         try:
             self.impl.init()
             self.impl.login()
-            self.impl.submit(solution_path, problem_info)
+            self.impl.submit(solution, problem_info)
             verdict = self.impl.get_verdict(problem_info)
         finally:
             self.impl.close()

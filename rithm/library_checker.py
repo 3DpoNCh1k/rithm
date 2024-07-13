@@ -3,10 +3,10 @@ from pathlib import Path
 
 
 class ProblemChecker:
-    def __init__(self, library_checker, problem_path: Path):
-        assert not problem_path.is_absolute()
+    def __init__(self, library_checker, problem: Path):
+        assert not problem.is_absolute()
         self.library_checker = library_checker
-        self.path = problem_path
+        self.path = problem
         assert self.absolute_path.exists()
 
     def generate_testcases(self):

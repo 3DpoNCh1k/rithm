@@ -13,7 +13,7 @@ class LibraryCheckerTester:
         self.library_checker = library_checker
 
     def test(self, task: LibraryCheckerTask, testcase=None):
-        problem_checker = self.library_checker.create_problem_checker(task.problem_path)
+        problem_checker = self.library_checker.create_problem_checker(task.problem)
         problem_checker.generate_testcases()
 
         compiler = create_default_compiler(self.algo_path)
@@ -23,14 +23,18 @@ class LibraryCheckerTester:
             outputs_path = build_path / "outputs"
             outputs_path.mkdir(exist_ok=True)
             solver_path = build_path / "solver"
-            compiler.compile_file(task.solution_path, solver_path)
+            compiler.compile_file(task.solution, solver_path)
             self._produce_solution_outputs(
                 solver_path, problem_checker, outputs_path, testcase
             )
             problem_checker.validate_testcases(outputs_path, testcase)
 
     def _produce_solution_outputs(
-        self, solution_path, problem_checker: ProblemChecker, output_path, testcase=None
+        self,
+        solution: Path,
+        problem_checker: ProblemChecker,
+        output_path,
+        testcase=None,
     ):
         print("produce_solution_outputs")
         testcases = problem_checker.get_testcases()
@@ -39,10 +43,10 @@ class LibraryCheckerTester:
         for testcase in testcases:
             name = testcase.name[:-3]
             my_output = output_path / f"{name}.out"
-            self._produce_solution_output(solution_path, testcase, my_output)
+            self._produce_solution_output(solution, testcase, my_output)
 
-    def _produce_solution_output(self, solution_path, testcase_path, output_path):
-        self._run(solution_path, testcase_path, output_path)
+    def _produce_solution_output(self, solution: Path, testcase_path, output_path):
+        self._run(solution, testcase_path, output_path)
 
     def _run(self, program, input_file, output_file):
         cmd = f"{program} < {input_file} > {output_file}"

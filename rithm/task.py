@@ -26,14 +26,14 @@ class Task:
 @dataclass
 class CodeforcesTask:
     link: str
-    solution_path: Path
+    solution: Path
 
 
 @dataclass
 class LibraryCheckerTask:
     link: str
-    problem_path: Path
-    solution_path: Path
+    problem: Path
+    solution: Path
     profile: str = ""
 
 
