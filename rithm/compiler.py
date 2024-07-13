@@ -6,7 +6,7 @@ from pathlib import Path
 @dataclass
 class Options:
     compiler: str
-    std: int = None
+    std: int
     includes: list[Path] = field(default_factory=list)
     optimization: str = "0"
     sanitizers: list[str] = field(default_factory=list)
@@ -22,19 +22,21 @@ class Compiler:
 
     def compile_file(self, input_file, output_file):
         cmd = f"{self.compilation_line} -o {output_file} {input_file}"
-        print(cmd)
         subprocess.check_call(cmd, shell=True)
 
     @property
     def compilation_line(self):
-        includes_line = " ".join(f"-I {path}" for path in self.options.includes)
-        warnings_line = " ".join(f"-W{warning}" for warning in self.options.warnings)
-        optimization_line = f"-O{self.options.optimization}"
-        sanitizers_line = " ".join(
+        compiler = f"{self.options.compiler}"
+        standard = f"--std=c++{self.options.std}"
+        includes = " ".join(f"-I {path}" for path in self.options.includes)
+        warnings = " ".join(f"-W{warning}" for warning in self.options.warnings)
+        optimization = f"-O{self.options.optimization}"
+        sanitizers = " ".join(
             f"-fsanitize={sanitizer}" for sanitizer in self.options.sanitizers
         )
-        standard_line = f"--std=c++{self.options.std}" if self.options.std else ""
-        with_extra_spaces = f"{self.options.compiler} {standard_line} {includes_line} {warnings_line} {optimization_line} {sanitizers_line} {self.options.others}"
+        others = self.options.others
+
+        with_extra_spaces = f"{compiler} {standard} {includes} {warnings} {optimization} {sanitizers} {others}"
         without_extra_spaces = " ".join(with_extra_spaces.split())
         return without_extra_spaces
 
