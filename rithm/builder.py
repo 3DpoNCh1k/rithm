@@ -22,11 +22,7 @@ class Builder:
     def get_default_output_path(input_file: CppFile):
         current_directory = Path(".").absolute()
         suffix = input_file.directory.relative_to(current_directory)
-        output_path = (
-            current_directory
-            / "build"
-            / suffix
-            / input_file.name_without_extension
-            / ".out"
-        )
+        output_directory = current_directory / "build" / suffix
+        output_directory.mkdir(parents=True, exist_ok=True)
+        output_path = output_directory / input_file.name_without_extension / ".out"
         return output_path

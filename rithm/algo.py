@@ -13,11 +13,19 @@ from .utils import *
 class Algo:
     def __init__(self, path: Path):
         self.path = path
-        self.task_parsers = [
-            LibraryCheckerTaskParser(),
-            CodeforcesTaskParser(),
-            TestTaskParser(),
-        ]
+        self.task_parsers = {
+            parser.type: parser
+            for parser in [
+                LibraryCheckerTaskParser(),
+                CodeforcesTaskParser(),
+                TestTaskParser(),
+            ]
+        }
+
+    def get_parsers(self, type=None):
+        if type is None:
+            return list(self.task_parsers.values())
+        return [self.task_parsers[type]]
 
     @property
     def source_code_path(self):
@@ -27,19 +35,18 @@ class Algo:
     def tests_path(self):
         return self.path / "tests"
 
-    def get_all_tasks(self, search_path, task_type):
-        tasks_list = map(self.get_tasks, search_path.glob("**/task.json"))
-        tasks = [task for tasks in tasks_list for task in tasks]
-        if task_type is not None:
-            tasks = filter(lambda task: isinstance(task, task_type), tasks)
-        return list(tasks)
+    def get_all_tasks(self, search_path, task_type=None):
+        tasks_list = map(
+            lambda path: self.get_tasks(path, task_type),
+            search_path.glob("**/task.json"),
+        )
+        return [task for tasks in tasks_list for task in tasks]
 
-    def get_tasks(self, path):
+    def get_tasks(self, path, task_type=None):
         task = Task(path)
         tasks = []
-        for parser in self.task_parsers:
-            if parser.type in task:
-                tasks += parser.parse(task)
+        for parser in self.get_parsers(task_type):
+            tasks += parser.parse(task)
         return tasks
 
     def expand_includes(self, text, dependency_order):
@@ -53,8 +60,8 @@ class Algo:
         algo_text = "\n".join(algo_text_list)
         return text + "\n" + algo_text
 
-    def create_submission_text(self, file_path):
-        dependency_graph = create_graph(file_path)
+    def create_submission_text(self, file: Path):
+        dependency_graph = create_graph(file)
         dependency_order = get_topological_order(dependency_graph)
         std_dependencies = set()
         for file_node in dependency_order:

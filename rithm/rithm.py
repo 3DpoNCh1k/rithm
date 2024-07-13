@@ -54,33 +54,23 @@ class Rithm:
             self.runner.run(program, input)
 
     def prepare_submission_command(self, filename):
-        file_path = Path(filename)
-        submission_text = self.algo.create_submission_text(file_path)
-        name = file_path.name
-        print(os.getcwd())
-        folder = file_path.parent
-        new_folder_path = Path(".") / "submit" / folder.name
-        new_folder_path.mkdir(parents=True, exist_ok=True)
-        open(new_folder_path / f"submission_{name}", "w").write(submission_text)
+        file = CppFile(filename)
+        submission_text = self.algo.create_submission_text(file.path)
+        current_directory = Path(".").absolute()
+        suffix = file.directory.relative_to(current_directory)
+        output_directory = current_directory / "submit" / suffix
+        output_directory.mkdir(parents=True, exist_ok=True)
+        output_path = output_directory / file.name
+        open(output_path, "w").write(submission_text)
 
     def test_command(self, path, type):
         path = Path(path)
-
-        target_class = None
-        if type == "local":
-            target_class = TestTask
-        if type == "library-checker":
-            target_class = LibraryCheckerTask
-        if type == "codeforces":
-            target_class = CodeforcesTask
-
-        tasks = self.algo.get_all_tasks(path, target_class)
+        tasks = self.algo.get_all_tasks(path, type)
         for task in tasks:
             self._process_task(task)
 
     def test_task_command(self, path, testcase):
         path = Path(path)
-        print(testcase)
         for task in self.algo.get_tasks(path):
             self._process_task(task, testcase)
 
