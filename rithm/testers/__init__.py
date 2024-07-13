@@ -1,3 +1,3 @@
-from .codeforces_tester import CodeforcesTester
-from .library_checker_tester import LibraryCheckerTester
-from .tester import Tester
+from .codeforces import CodeforcesTester
+from .library_checker import LibraryCheckerTester
+from .test import Tester
