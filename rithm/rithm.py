@@ -12,6 +12,7 @@ from .codeforces import *
 from .compiler import *
 from .config import *
 from .contest import *
+from .files.cpp import CppFile
 from .graph import *
 from .library_checker import *
 from .runner import Runner
@@ -80,7 +81,7 @@ class Rithm:
         self.cleaner.clean_build_outputs(path)
 
     def check_dependencies_command(self, filename):
-        self._check_dependency_cycle(Path(filename))
+        self.algo.check_dependency_cycle(Path(filename))
         print("Success!")
 
     def check_all_command(self, path):
@@ -89,7 +90,7 @@ class Rithm:
         for ext in cpp_extensions:
             for file_path in path.glob(f"**/*.{ext}"):
                 print(file_path)
-                self._check_dependency_cycle(file_path)
+                self.algo.check_dependency_cycle(file_path)
 
         self._check_pragma(path)
 
@@ -105,13 +106,6 @@ class Rithm:
 
     def contest_create_command(self, problems):
         self.contest.create_problems(problems)
-
-    def _check_dependency_cycle(self, file_path):
-        g = create_graph(file_path)
-        result, cycle = has_cycle(g)
-        if result:
-            print(f"Found cycle: {cycle}")
-            sys.exit(1)
 
     def _check_pragma(self, path):
         header_extensions = ["hpp", "h"]

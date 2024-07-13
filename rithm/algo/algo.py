@@ -56,3 +56,8 @@ class Algo:
 
     def get_algo_name(self, file: Path):
         return str(file.relative_to(self.path))
+
+    def check_dependency_cycle(self, file: Path):
+        file = AlgoCppFile(file)
+        text = self.preprocessor.check_dependency_cycle(file)
+        return text

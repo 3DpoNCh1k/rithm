@@ -1,4 +1,6 @@
-from rithm.graph import get_topological_order
+import sys
+
+from rithm.graph import get_topological_order, has_cycle
 from rithm.utils.cpp import *
 
 from .cpp_file import AlgoCppFile
@@ -17,6 +19,13 @@ class Preprocessor:
         algo_text = self._get_algo_text(dependency_order)
 
         return "\n".join[header, std_includes_text, algo_text]
+
+    def check_dependency_cycle(self, file: AlgoCppFile):
+        dependency_graph = self._create_graph(file)
+        result, cycle = has_cycle(dependency_graph)
+        if result:
+            print(f"Found cycle: {cycle}")
+            sys.exit(1)
 
     def _get_std_includes_text(dependency_order):
         std_dependencies = set()
