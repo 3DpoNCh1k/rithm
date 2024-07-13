@@ -14,6 +14,7 @@ from .graph import *
 from .library_checker import *
 from .secrets import *
 from .stress import *
+from .tasks import *
 from .testers import *
 from .utils import *
 
@@ -93,7 +94,7 @@ class Rithm:
     def test_task_command(self, path, testcase):
         path = Path(path)
         print(testcase)
-        for task in self.algo.get_subtasks(path):
+        for task in self.algo.get_tasks(path):
             self._process_task(task, testcase)
 
     def clean_command(self, path):

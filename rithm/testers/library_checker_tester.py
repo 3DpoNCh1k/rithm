@@ -4,7 +4,7 @@ from pathlib import Path
 
 from rithm.compiler import create_default_compiler
 from rithm.library_checker import LibraryChecker, ProblemChecker
-from rithm.task import LibraryCheckerTask
+from rithm.tasks.library_checker import LibraryCheckerTask
 
 
 class LibraryCheckerTester:

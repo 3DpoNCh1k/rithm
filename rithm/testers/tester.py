@@ -4,7 +4,7 @@ import tempfile
 from pathlib import Path
 
 from rithm.compiler import create_compiler
-from rithm.task import TestTask
+from rithm.tasks.test import TestTask
 
 
 class Tester:

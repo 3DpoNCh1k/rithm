@@ -4,7 +4,7 @@ from pathlib import Path
 
 from rithm.algo import Algo
 from rithm.codeforces import Codeforces, Verdict
-from rithm.task import CodeforcesTask
+from rithm.tasks.codeforces import CodeforcesTask
 
 
 class CodeforcesTester:

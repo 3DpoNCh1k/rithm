@@ -1,6 +1,4 @@
 import json
-import sys
-from dataclasses import dataclass
 from pathlib import Path
 
 
@@ -21,23 +19,3 @@ class Task:
     @property
     def directory(self):
         return self.path.parent
-
-
-@dataclass
-class CodeforcesTask:
-    link: str
-    solution: Path
-
-
-@dataclass
-class LibraryCheckerTask:
-    link: str
-    problem: Path
-    solution: Path
-    profile: str
-
-
-@dataclass
-class TestTask:
-    target: Path
-    profile: str
