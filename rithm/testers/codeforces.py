@@ -8,6 +8,8 @@ from rithm.tasks.codeforces import CodeforcesTask
 
 
 class CodeforcesTester:
+    task_type = CodeforcesTask
+
     def __init__(self, algo: Algo, codeforces: Codeforces):
         self.algo = algo
         self.codeforces = codeforces

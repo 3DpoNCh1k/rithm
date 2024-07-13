@@ -1,16 +1,15 @@
 import re
-from os.path import splitext
+from pathlib import Path
 
 
 class File:
-    def __init__(self, path):
-        self.path = path
+    def __init__(self, file):
+        self.path = Path(file).absolute()
+        assert self.path.is_file()
 
     @property
     def extension(self):
-        with_dot = splitext(self.path)[1]
-        assert with_dot.startswith(".")
-        return with_dot[1:]
+        return self.path.suffix
 
     @property
     def text(self):
@@ -21,16 +20,27 @@ class File:
         return self.path.name
 
     @property
-    def absolute_name(self):
-        return str(self.path.absolute())
+    def name_without_extension(self):
+        return self.path.stem
+
+    @property
+    def full_name(self):
+        return str(self.path)
+
+    @property
+    def directory(self):
+        return self.path.parent
 
 
 class CppFile(File):
-    extensions = ("cpp", "hpp", "h")
+    valid_extensions = ("cpp", "hpp", "h")
 
-    def __init__(self, path):
-        super().__init__(path)
-        assert self.extension in CppFile.extensions
+    def __init__(self, file):
+        super().__init__(file)
+        assert (
+            self.extension in self.valid_extensions
+        ), f"File {file} should have any of these {self.valid_extensions} extensions"
+
         self.dependencies = self._find_dependencies()
 
     def _find_dependencies(self):

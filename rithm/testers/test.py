@@ -8,6 +8,8 @@ from rithm.tasks.test import TestTask
 
 
 class Tester:
+    task_type = TestTask
+
     def __init__(self, algo_path, config):
         self.algo_path = algo_path
         self.config = config

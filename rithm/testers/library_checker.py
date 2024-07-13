@@ -8,6 +8,8 @@ from rithm.tasks.library_checker import LibraryCheckerTask
 
 
 class LibraryCheckerTester:
+    task_type = LibraryCheckerTask
+
     def __init__(self, algo_path, library_checker: LibraryChecker):
         self.algo_path = algo_path
         self.library_checker = library_checker

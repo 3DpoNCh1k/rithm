@@ -14,7 +14,7 @@ class TestTaskParser:
     type = "test"
 
     def parse(self, task: Task):
-        tests = task["test"]
+        tests = task[self.type]
         return [
             TestTask(
                 task.directory / test["target"],

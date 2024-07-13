@@ -6,12 +6,14 @@ import tempfile
 from pathlib import Path
 
 from .algo import *
+from .builder import Builder
 from .codeforces import *
 from .compiler import *
 from .config import *
 from .contest import *
 from .graph import *
 from .library_checker import *
+from .runner import Runner
 from .secrets import *
 from .stress import *
 from .tasks import *
@@ -31,40 +33,25 @@ class Rithm:
         )
         self.contest = Contest()
         self.stress = Stress()
+        self.builder = Builder()
+        self.runner = Runner()
+        self.testers = {
+            tester.task_type: tester
+            for tester in [
+                LibraryCheckerTester(self.algo_path, self.library_checker),
+                CodeforcesTester(self.algo, self.codeforces),
+                Tester(self.algo_path, self.config),
+            ]
+        }
 
     def build_command(self, profile, input_file, output_file):
-        assert input_file[-4:] == ".cpp"
-        profile = self.config[profile]
-        compiler = create_compiler(self.algo_path, self.config[profile])
-        print(compiler.compilation_line)
-        print(input_file)
-        print(output_file)
-        input_path = Path(input_file)
-        assert not input_path.is_absolute()
-        if output_file is None:
-            name = os.path.splitext(input_path.name)[0]
-            folder = input_path.parent
-            build_folder = Path("build") / folder
-            build_folder.mkdir(parents=True, exist_ok=True)
-            output_file = build_folder / f"{name}.exe"
+        self.builder.build(profile, input_file, output_file)
 
-        print(output_file)
-        compiler.compile_file(input_file, output_file)
-
-    def run_command(self, profile, filename, input_file):
-        assert filename[-4:] == ".cpp"
-
-        compiler = create_compiler(self.algo_path, self.config[profile])
-        print(compiler.compilation_line)
-
-        with tempfile.TemporaryDirectory() as temporary_run_directory:
-            run_path = Path(temporary_run_directory)
-            solver_path = run_path / "solver"
-            compiler.compile_file(filename, solver_path)
-            cmd = f"{solver_path}" + ("" if input_file is None else f" < {input_file}")
-            subprocess.check_call(cmd, shell=True)
-
-        print("Success!")
+    def run_command(self, profile, filename, input):
+        with tempfile.TemporaryDirectory() as directory:
+            program = Path(directory) / "run.out"
+            self.builder.build(profile, filename, program)
+            self.runner.run(program, input)
 
     def prepare_submission_command(self, filename):
         file_path = Path(filename)
@@ -155,17 +142,8 @@ class Rithm:
         print("Success!")
 
     def _process_task(self, task, testcase=None):
-        if isinstance(task, LibraryCheckerTask):
-            tester = LibraryCheckerTester(self.algo_path, self.library_checker)
-            tester.test(task, testcase)
-
-        if isinstance(task, TestTask):
-            tester = Tester(self.algo_path, self.config)
-            tester.test(task, testcase)
-
-        if isinstance(task, CodeforcesTask):
-            tester = CodeforcesTester(self.algo, self.codeforces)
-            tester.test(task, testcase)
+        tester = self.testers[type(task)]
+        tester.test(task, testcase)
 
 
 rithm = Rithm()
