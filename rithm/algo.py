@@ -1,3 +1,5 @@
+import sys
+
 from rithm.graph import create_graph, get_algo_name, get_topological_order
 from rithm.source_files import CppFile, File
 
