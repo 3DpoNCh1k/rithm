@@ -7,6 +7,7 @@ from pathlib import Path
 
 from .algo import *
 from .builder import Builder
+from .cleaner import Cleaner
 from .codeforces import *
 from .compiler import *
 from .config import *
@@ -34,6 +35,7 @@ class Rithm:
         self.contest = Contest()
         self.stress = Stress()
         self.builder = Builder()
+        self.cleaner = Cleaner()
         self.runner = Runner()
         self.testers = {
             tester.task_type: tester
@@ -75,17 +77,7 @@ class Rithm:
             self._process_task(task, testcase)
 
     def clean_command(self, path):
-        path = Path(path).absolute()
-        patterns = [".*\.exe$", ".*\.exp$", ".*\.lib$", ".*\.pdb$"]
-        for pathname, _, filenames in os.walk(path):
-            to_remove = filter(
-                lambda filename: any(
-                    re.match(pattern, filename) for pattern in patterns
-                ),
-                filenames,
-            )
-            for filename in to_remove:
-                os.remove(Path(pathname) / filename)
+        self.cleaner.clean_build_outputs(path)
 
     def check_dependencies_command(self, filename):
         self._check_dependency_cycle(Path(filename))
