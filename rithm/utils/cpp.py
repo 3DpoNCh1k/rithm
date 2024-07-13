@@ -1,8 +1,7 @@
 import re
-from pathlib import Path
 
 
-def remove_pragma(text):
+def remove_pragma_once(text):
     return re.sub("#pragma once", "", text).lstrip()
 
 
@@ -19,17 +18,11 @@ def remove_includes(text):
     return new_text
 
 
-def add_std_includes(text, std_dependencies):
-    include_list = list(map(lambda name: f"#include <{name}>", std_dependencies))
+def generate_includes(dependencies):
+    include_list = list(map(lambda name: f"#include <{name}>", dependencies))
     include_text = "\n".join(include_list)
-    return text + "\n" + include_text
+    return include_text
 
 
-def has_pragma(path):
+def has_pragma_once(path):
     return path.open().read().startswith("#pragma once")
-
-
-def get_files_from_directory(path: Path, recursive=False):
-    assert path.is_dir()
-    iterator = path.glob("**/*") if recursive else path.iterdir()
-    return list(filter(lambda path: path.is_file(), iterator))

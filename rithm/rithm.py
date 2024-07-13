@@ -117,7 +117,7 @@ class Rithm:
         header_extensions = ["hpp", "h"]
         for ext in header_extensions:
             for file_path in path.glob(f"**/*.{ext}"):
-                if not has_pragma(file_path):
+                if not has_pragma_once(file_path):
                     print(f"File {file_path} does not has #pragma once")
                     sys.exit(1)
 

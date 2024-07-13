@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from rithm.compiler import create_compiler
-from rithm.source_files import CppFile
+from rithm.files.cpp_file import CppFile
 
 
 class Builder:
