@@ -28,11 +28,10 @@ def _get_parsers(task_type):
 
 
 def get_all_tasks(search_path, task_type=None):
-    tasks_list = map(
-        lambda path: get_tasks(path, task_type),
-        search_path.glob("**/task.json"),
-    )
-    return [task for tasks in tasks_list for task in tasks]
+    tasks = []
+    for path in sorted(search_path.glob("**/task.json")):
+        tasks.extend(get_tasks(path, task_type))
+    return tasks
 
 
 def get_tasks(path, task_type=None):
@@ -40,7 +39,6 @@ def get_tasks(path, task_type=None):
     task = Task(path)
     tasks = []
     parsers = _get_parsers(task_type)
-    # assert any([p.can_parse(task) for p in parsers])
     for parser in parsers:
         if parser.can_parse(task):
             tasks += parser.parse(task)

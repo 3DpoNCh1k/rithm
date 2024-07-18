@@ -1,9 +1,23 @@
+import re
 import subprocess
 from pathlib import Path
 
 
+class LibraryChecker:
+    def __init__(self, path: Path):
+        assert path.is_absolute()
+        self.path = path
+
+    @property
+    def generator(self):
+        return self.path / "generate.py"
+
+    def create_problem_checker(self, path):
+        return ProblemChecker(self, path)
+
+
 class ProblemChecker:
-    def __init__(self, library_checker, problem: Path):
+    def __init__(self, library_checker: LibraryChecker, problem: Path):
         assert not problem.is_absolute()
         self.library_checker = library_checker
         self.path = problem
@@ -15,21 +29,18 @@ class ProblemChecker:
         subprocess.check_call(cmd, shell=True)
 
     def get_testcases(self):
-        return sorted(self.testcases_path.glob("*.in"))
+        return sorted(map(lambda path: path.name, self.testcases_path.glob("*.in")))
 
-    def validate_testcase(self, testcase, output):
+    def validate_testcase(self, testcase: str, output: Path):
         correct_output = self.corresponding_answer(testcase)
-        cmd = f"{self.checker} {testcase} {output} {correct_output}"
-        print(f"Validation {testcase.name}")
+        cmd = f"{self.checker} {self.testcase_path(testcase)} {output} {correct_output}"
+        print(f"Validating {testcase}")
         subprocess.check_call(cmd, shell=True)
 
-    def validate_testcases(self, outputs_path, testcase=None):
-        testcases = self.get_testcases()
-        if testcase is not None:
-            testcases = list(filter(lambda path: path.name == testcase, testcases))
-        for testcase in testcases:
+    def validate_testcases(self, outputs: Path):
+        for testcase in self.get_testcases():
             self.validate_testcase(
-                testcase, self.corresponding_output(outputs_path, testcase)
+                testcase, self.corresponding_output(outputs, testcase)
             )
 
     @property
@@ -48,22 +59,12 @@ class ProblemChecker:
     def checker(self):
         return self.absolute_path / "checker"
 
-    def corresponding_answer(self, testcase):
+    def testcase_path(self, testcase: str):
+        return self.testcases_path / testcase
+
+    def corresponding_answer(self, testcase: str):
         return self.corresponding_output(self.answers_path, testcase)
 
-    def corresponding_output(self, outputs_path, testcase):
-        name = testcase.name[:-3]
-        return outputs_path / f"{name}.out"
-
-
-class LibraryChecker:
-    def __init__(self, path: Path):
-        assert path.is_absolute()
-        self.path = path
-
-    @property
-    def generator(self):
-        return self.path / "generate.py"
-
-    def create_problem_checker(self, path):
-        return ProblemChecker(self, path)
+    def corresponding_output(self, outputs: Path, testcase: str):
+        name = re.match(r"(?P<name>.*)\.in", testcase).group("name")
+        return outputs / f"{name}.out"

@@ -38,10 +38,10 @@ class Rithm:
         self.testers = {
             tester.task_type: tester
             for tester in [
-                LibraryCheckerTester(self.algo_path, self.library_checker),
+                LibraryCheckerTester(self.builder, self.library_checker),
                 CodeforcesTester(self.algo, self.codeforces),
-                Tester(self.algo_path, self.config),
-                ExampleTester(self.algo_path, self.config),
+                Tester(self.builder),
+                ExampleTester(self.builder),
             ]
         }
 

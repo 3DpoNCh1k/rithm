@@ -9,8 +9,8 @@ from rithm.tasks.test import TestTask
 class Tester:
     task_type = TestTask
 
-    def __init__(self, algo_path, config):
-        self.builder = Builder(config, algo_path)
+    def __init__(self, builder):
+        self.builder = builder
         self.runner = Runner()
 
     def test(self, task: TestTask, _testcase=None):
