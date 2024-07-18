@@ -1,4 +1,5 @@
 from .codeforces import *
+from .example import *
 from .library_checker import *
 from .task import *
 from .test import *
@@ -8,6 +9,7 @@ __all__ = [
     "CodeforcesTask",
     "LibraryCheckerTask",
     "TestTask",
+    "ExampleTask",
     "get_all_tasks",
     "get_tasks",
 ]
@@ -18,6 +20,7 @@ def _get_parsers(task_type):
         LibraryCheckerTaskParser(),
         CodeforcesTaskParser(),
         TestTaskParser(),
+        ExampleTaskParser(),
     ]
     if task_type is None:
         return parsers

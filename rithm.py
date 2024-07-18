@@ -32,8 +32,7 @@ def main():
 
     try:
         args.cmd(args)
-    except Exception as e:
-        print(e)
+    except Exception:
         traceback.print_exc()
         sys.exit(1)
 

@@ -8,7 +8,9 @@ def test_command(args):
 def add_test_command(subparsers):
     test = subparsers.add_parser("test")
     test.add_argument("path")
-    test.add_argument("--type", choices=["tests", "library-checker", "codeforces"])
+    test.add_argument(
+        "--type", choices=["tests", "library-checker", "codeforces", "examples"]
+    )
     test.set_defaults(cmd=test_command)
 
 

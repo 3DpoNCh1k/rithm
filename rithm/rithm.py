@@ -41,6 +41,7 @@ class Rithm:
                 LibraryCheckerTester(self.algo_path, self.library_checker),
                 CodeforcesTester(self.algo, self.codeforces),
                 Tester(self.algo_path, self.config),
+                ExampleTester(self.algo_path, self.config),
             ]
         }
 
@@ -124,7 +125,7 @@ class Rithm:
         print(task)
         tester = self.testers[type(task)]
         print(tester)
-        # tester.test(task, testcase)
+        tester.test(task, testcase)
 
 
 rithm = Rithm()

@@ -1,3 +1,4 @@
+import re
 import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -14,6 +15,23 @@ class Options:
     others: str = ""
 
 
+class CompilationError(RuntimeError):
+    def __init__(self, cmd, output):
+        self.cmd = cmd
+        self.output = output
+
+    def __str__(self):
+        return "\n".join(
+            [
+                "Compilation error",
+                "Failed command:",
+                f"{self.cmd}",
+                "Output:",
+                f"{self.output}",
+            ]
+        )
+
+
 class Compiler:
     def __init__(self, options: Options):
         # TODO: support clang
@@ -22,7 +40,31 @@ class Compiler:
 
     def compile_file(self, input_file, output_file):
         cmd = f"{self.compilation_line} -o {output_file} {input_file}"
-        subprocess.check_call(cmd, shell=True)
+        proc = subprocess.run(
+            cmd,
+            check=False,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+        if proc.returncode != 0:
+            text = proc.stdout
+            match = re.search("error", text)
+            assert match
+            matched_text = text[match.start() : match.end()]
+            text_before = text[: match.start()]
+            text_after = text[match.end() :]
+            lines_before = text_before.split("\n")
+            lines_after = text_after.split("\n")
+            LINES_BEFORE = 1
+            LINES_AFTER = 15
+            output = (
+                "\n".join(lines_before[-LINES_BEFORE:])
+                + matched_text
+                + "\n".join(lines_after[:LINES_AFTER])
+            )
+            raise CompilationError(cmd, output)
 
     @property
     def compilation_line(self):

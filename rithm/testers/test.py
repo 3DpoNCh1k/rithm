@@ -1,8 +1,8 @@
-import subprocess
 import tempfile
 from pathlib import Path
 
-from rithm.staff.compiler import create_compiler
+from rithm.staff.builder import Builder
+from rithm.staff.runner import Runner
 from rithm.tasks.test import TestTask
 
 
@@ -10,17 +10,11 @@ class Tester:
     task_type = TestTask
 
     def __init__(self, algo_path, config):
-        self.algo_path = algo_path
-        self.config = config
+        self.builder = Builder(config, algo_path)
+        self.runner = Runner()
 
     def test(self, task: TestTask, _testcase=None):
-        compiler = create_compiler(self.algo_path, self.config[task.profile])
-
-        with tempfile.TemporaryDirectory() as temporary_build_directory:
-            build_path = Path(temporary_build_directory)
-            test_runner_path = build_path / "test_runner"
-            compiler.compile_file(task.target, test_runner_path)
-            cmd = f"{test_runner_path}"
-            print(cmd)
-            subprocess.check_call(cmd, shell=True)
-            print("Success!")
+        with tempfile.TemporaryDirectory() as directory:
+            target_executable = Path(directory) / "target"
+            self.builder.build(task.profile, task.target, target_executable)
+            self.runner.run(target_executable)
