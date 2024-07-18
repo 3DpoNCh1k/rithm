@@ -3,7 +3,6 @@ import sys
 from pathlib import Path
 
 from .problem_info import ProblemInfo
-from .robobrowser_cf import RobobrowserCodeforces
 from .selenium_cf import SeleniumCodeforces
 
 
