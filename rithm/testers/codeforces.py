@@ -14,7 +14,7 @@ class CodeforcesTester:
         self.algo = algo
         self.codeforces = codeforces
 
-    def test(self, task: CodeforcesTask, testcase=None):
+    def test(self, task: CodeforcesTask, _testcase=None):
         submission_text = self.algo.create_submission_text(task.solution)
         with tempfile.TemporaryDirectory() as temporary_build_directory:
             build_path = Path(temporary_build_directory)

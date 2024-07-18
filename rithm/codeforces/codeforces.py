@@ -16,7 +16,7 @@ class Codeforces:
             pattern = r"https://codeforces.com/group/(?P<group>.*)/contest/(?P<contest>.*)/problem/(?P<problem>.*)"
             group, contest, problem = re.search(pattern, problem_link).groups()
             problem_info = ProblemInfo(group, contest, problem)
-        except:
+        except Exception:
             print(f"Currently only the following format is supported: {pattern}")
             sys.exit(1)
 

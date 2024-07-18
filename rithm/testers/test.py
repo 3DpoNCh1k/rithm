@@ -1,5 +1,4 @@
 import subprocess
-import sys
 import tempfile
 from pathlib import Path
 
@@ -14,7 +13,7 @@ class Tester:
         self.algo_path = algo_path
         self.config = config
 
-    def test(self, task: TestTask, testcase=None):
+    def test(self, task: TestTask, _testcase=None):
         compiler = create_compiler(self.algo_path, self.config[task.profile])
 
         with tempfile.TemporaryDirectory() as temporary_build_directory:

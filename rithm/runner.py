@@ -6,12 +6,13 @@ class Runner:
         pass
 
     def _run(self, program, input_file=None, output_file=None, capture_output=False):
-        return subprocess.check_call(
+        return subprocess.run(
             program,
             stdin=input_file,
             stdout=output_file,
             stderr=output_file,
             capture_output=capture_output,
+            check=True,
         )
 
     def run(self, program, input_file=None, output_file=None):

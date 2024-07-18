@@ -5,8 +5,9 @@ from rithm.files.cpp import CppFile
 
 
 class Builder:
-    def __init__(self, config):
+    def __init__(self, config, algo_path):
         self.config = config
+        self.algo_path = algo_path
 
     def build(self, profile, input_file, output_file=None):
         input_file = CppFile(input_file)
@@ -19,7 +20,7 @@ class Builder:
         compiler = create_compiler(self.algo_path, self.config[profile])
         compiler.compile_file(input_file.path, output_path)
 
-    def get_default_output_path(input_file: CppFile):
+    def get_default_output_path(self, input_file: CppFile):
         current_directory = Path(".").absolute()
         suffix = input_file.directory.relative_to(current_directory)
         output_directory = current_directory / "build" / suffix

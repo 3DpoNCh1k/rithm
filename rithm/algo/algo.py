@@ -11,7 +11,7 @@ from .preprocessor import Preprocessor
 class Algo:
     def __init__(self, path: Path):
         self.path = path
-        self.preprocessor = Preprocessor()
+        self.preprocessor = Preprocessor(self.path)
 
     @property
     def source_code_path(self):
@@ -59,5 +59,4 @@ class Algo:
 
     def check_dependency_cycle(self, file: Path):
         file = AlgoCppFile(file)
-        text = self.preprocessor.check_dependency_cycle(file)
-        return text
+        self.preprocessor.check_dependency_cycle(file)

@@ -13,28 +13,31 @@ __all__ = [
 ]
 
 
-def _get_parsers(type):
+def _get_parsers(task_type):
     parsers = [
         LibraryCheckerTaskParser(),
         CodeforcesTaskParser(),
         TestTaskParser(),
     ]
-    if type is None:
+    if task_type is None:
         return parsers
-    list(filter(lambda parser: parser.type == type))
+    return list(filter(lambda parser: parser.type == task_type, parsers))
 
 
-def get_all_tasks(self, search_path, task_type=None):
+def get_all_tasks(search_path, task_type=None):
     tasks_list = map(
-        lambda path: self.get_tasks(path, task_type),
+        lambda path: get_tasks(path, task_type),
         search_path.glob("**/task.json"),
     )
     return [task for tasks in tasks_list for task in tasks]
 
 
-def get_tasks(self, path, task_type=None):
+def get_tasks(path, task_type=None):
     task = Task(path)
     tasks = []
-    for parser in _get_parsers(task_type):
-        tasks += parser.parse(task)
+    parsers = _get_parsers(task_type)
+    assert any([p.can_parse(task) for p in parsers])
+    for parser in parsers:
+        if parser.can_parse(task):
+            tasks += parser.parse(task)
     return tasks

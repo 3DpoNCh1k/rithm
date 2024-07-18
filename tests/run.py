@@ -1,7 +1,7 @@
 from pathlib import Path
 
+from rithm.files import *
 from rithm.graph import *
-from rithm.source_files import *
 
 
 def main():
@@ -14,19 +14,19 @@ def main():
     #         # print(SourceFile(p).extension)
     #         # print(SourceFile(p).text)
     #         CppFile(p)
-    p = Path("./tests/run.cpp")
-    cpp_file = CppFile(p)
-    print(hash(cpp_file))
-    print(hash(Node(cpp_file)))
+    # p = Path("./tests/run.cpp")
+    # cpp_file = CppFile(p)
+    # print(hash(cpp_file))
+    # print(hash(Node(cpp_file)))
 
-    g = create_graph(p)
-    res, cycle = has_cycle(g)
-    print(g)
+    # g = create_graph(p)
+    # res, cycle = has_cycle(g)
+    # print(g)
 
-    g = {1: [2], 2: [1]}
-    res, cycle = has_cycle(g)
-    print(res)
-    print(cycle)
+    # g = {1: [2], 2: [1]}
+    # res, cycle = has_cycle(g)
+    # print(res)
+    # print(cycle)
 
 
 if __name__ == "__main__":

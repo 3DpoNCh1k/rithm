@@ -1,9 +1,9 @@
-import os
-import re
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+from rithm.utils.cpp import has_pragma_once
+from rithm.utils.files import get_files_from_directory
 
 from .algo import *
 from .builder import Builder
@@ -35,7 +35,7 @@ class Rithm:
         )
         self.contest = Contest()
         self.stress = Stress()
-        self.builder = Builder()
+        self.builder = Builder(self.config, self.algo_path)
         self.cleaner = Cleaner()
         self.runner = Runner()
         self.testers = {
@@ -68,13 +68,13 @@ class Rithm:
 
     def test_command(self, path, type):
         path = Path(path)
-        tasks = self.algo.get_all_tasks(path, type)
+        tasks = get_all_tasks(path, type)
         for task in tasks:
             self._process_task(task)
 
     def test_task_command(self, path, testcase):
         path = Path(path)
-        for task in self.algo.get_tasks(path):
+        for task in get_tasks(path):
             self._process_task(task, testcase)
 
     def clean_command(self, path):
@@ -86,14 +86,13 @@ class Rithm:
 
     def check_all_command(self, path):
         path = Path(path)
-        cpp_extensions = ["cpp", "hpp", "h"]
-        for ext in cpp_extensions:
-            for file_path in path.glob(f"**/*.{ext}"):
-                print(file_path)
-                self.algo.check_dependency_cycle(file_path)
+        cpp_extensions = [".cpp", ".hpp", ".h"]
+        for file in get_files_from_directory(
+            path, recursive=True, extensions=cpp_extensions
+        ):
+            self.algo.check_dependency_cycle(file)
 
         self._check_pragma(path)
-
         self.algo.check_extensions()
         self.algo.check_include_all()
         print("Success!")
@@ -109,17 +108,20 @@ class Rithm:
 
     def _check_pragma(self, path):
         header_extensions = ["hpp", "h"]
-        for ext in header_extensions:
-            for file_path in path.glob(f"**/*.{ext}"):
-                if not has_pragma_once(file_path):
-                    print(f"File {file_path} does not has #pragma once")
-                    sys.exit(1)
+        for file in get_files_from_directory(
+            path, recursive=True, extensions=header_extensions
+        ):
+            if not has_pragma_once(file):
+                print(f"File {file} does not have #pragma once")
+                sys.exit(1)
 
         print("Success!")
 
     def _process_task(self, task, testcase=None):
+        print(task)
         tester = self.testers[type(task)]
-        tester.test(task, testcase)
+        print(tester)
+        # tester.test(task, testcase)
 
 
 rithm = Rithm()

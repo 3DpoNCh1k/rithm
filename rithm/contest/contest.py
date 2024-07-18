@@ -2,7 +2,7 @@ import os
 import shutil
 from pathlib import Path
 
-from rithm.utils import get_files_from_directory
+from rithm.utils.files import get_files_from_directory
 
 CONTEST_DIRECTORY = Path(os.path.realpath(__file__)).parent
 

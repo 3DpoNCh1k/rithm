@@ -4,7 +4,13 @@ from pathlib import Path
 
 
 class Cleaner:
-    build_output_patterns = [".*\.out$", ".*\.exe$", ".*\.exp$", ".*\.lib$", ".*\.pdb$"]
+    build_output_patterns = [
+        r".*\.out$",
+        r".*\.exe$",
+        r".*\.exp$",
+        r".*\.lib$",
+        r".*\.pdb$",
+    ]
 
     def clean_build_outputs(self, path):
         self.clean(path, self.build_output_patterns)

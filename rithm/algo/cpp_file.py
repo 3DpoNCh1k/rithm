@@ -2,9 +2,6 @@ from rithm.files.cpp import CppFile
 
 
 class AlgoCppFile(CppFile):
-    def __init__(self, file):
-        super().__init__(file)
-
     @property
     def algo_dependencies(self):
         return tuple(

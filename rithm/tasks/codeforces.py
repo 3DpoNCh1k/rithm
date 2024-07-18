@@ -13,6 +13,9 @@ class CodeforcesTask:
 class CodeforcesTaskParser:
     type = "codeforces"
 
+    def can_parse(self, task: Task):
+        return self.type in task
+
     def parse(self, task: Task):
         problem = task[self.type]
         return [CodeforcesTask(problem["link"], task.directory / problem["solution"])]

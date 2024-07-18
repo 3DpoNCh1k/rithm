@@ -11,7 +11,10 @@ class TestTask:
 
 
 class TestTaskParser:
-    type = "test"
+    type = "tests"
+
+    def can_parse(self, task: Task):
+        return self.type in task
 
     def parse(self, task: Task):
         tests = task[self.type]

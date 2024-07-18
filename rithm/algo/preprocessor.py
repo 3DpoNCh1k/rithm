@@ -18,7 +18,7 @@ class Preprocessor:
         std_includes_text = self._get_std_includes_text(dependency_order)
         algo_text = self._get_algo_text(dependency_order)
 
-        return "\n".join[header, std_includes_text, algo_text]
+        return "\n".join([header, std_includes_text, algo_text])
 
     def check_dependency_cycle(self, file: AlgoCppFile):
         dependency_graph = self._create_graph(file)
@@ -27,14 +27,14 @@ class Preprocessor:
             print(f"Found cycle: {cycle}")
             sys.exit(1)
 
-    def _get_std_includes_text(dependency_order):
+    def _get_std_includes_text(self, dependency_order):
         std_dependencies = set()
         for file_node in dependency_order:
             std_dependencies.update(file_node.file.other_dependencies)
 
         return generate_includes(std_dependencies)
 
-    def _get_algo_text(dependency_order):
+    def _get_algo_text(self, dependency_order):
         algo_text_list = []
         for file_node in dependency_order:
             file_text = file_node.file.text
