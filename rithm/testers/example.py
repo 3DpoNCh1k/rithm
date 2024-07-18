@@ -9,7 +9,7 @@ from rithm.tasks.example import ExampleTask
 class ExampleTester:
     task_type = ExampleTask
 
-    def __init__(self, builder):
+    def __init__(self, builder: Builder):
         self.builder = builder
         self.runner = ExamplesRunner()
 

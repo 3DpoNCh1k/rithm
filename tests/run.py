@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from rithm.files import *
-from rithm.graph import *
+from rithm.utils.graph import *
 
 
 def main():

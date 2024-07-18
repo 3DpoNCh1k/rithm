@@ -10,13 +10,13 @@ from .codeforces import *
 from .config import *
 from .contest import *
 from .files.cpp import CppFile
-from .graph import *
 from .secrets import *
 from .staff import *
 from .stress import *
 from .tasks import *
 from .testers import *
 from .utils import *
+from .utils.graph import *
 
 
 class Rithm:

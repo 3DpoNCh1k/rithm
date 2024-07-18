@@ -1,7 +1,7 @@
 import sys
 
-from rithm.graph import get_topological_order, has_cycle
 from rithm.utils.cpp import *
+from rithm.utils.graph import get_topological_order, has_cycle
 
 from .cpp_file import AlgoCppFile
 
