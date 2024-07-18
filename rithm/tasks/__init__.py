@@ -33,10 +33,11 @@ def get_all_tasks(search_path, task_type=None):
 
 
 def get_tasks(path, task_type=None):
+    print(path)
     task = Task(path)
     tasks = []
     parsers = _get_parsers(task_type)
-    assert any([p.can_parse(task) for p in parsers])
+    # assert any([p.can_parse(task) for p in parsers])
     for parser in parsers:
         if parser.can_parse(task):
             tasks += parser.parse(task)

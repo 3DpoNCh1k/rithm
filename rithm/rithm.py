@@ -6,17 +6,13 @@ from rithm.utils.cpp import has_pragma_once
 from rithm.utils.files import get_files_from_directory
 
 from .algo import *
-from .builder import Builder
-from .cleaner import Cleaner
 from .codeforces import *
-from .compiler import *
 from .config import *
 from .contest import *
 from .files.cpp import CppFile
 from .graph import *
-from .library_checker import *
-from .runner import Runner
 from .secrets import *
+from .staff import *
 from .stress import *
 from .tasks import *
 from .testers import *
@@ -38,6 +34,7 @@ class Rithm:
         self.builder = Builder(self.config, self.algo_path)
         self.cleaner = Cleaner()
         self.runner = Runner()
+        self.examples_runner = ExamplesRunner()
         self.testers = {
             tester.task_type: tester
             for tester in [
@@ -50,11 +47,17 @@ class Rithm:
     def build_command(self, profile, input_file, output_file):
         self.builder.build(profile, input_file, output_file)
 
-    def run_command(self, profile, filename, input):
+    def run_command(self, profile, filename, input_path):
         with tempfile.TemporaryDirectory() as directory:
             program = Path(directory) / "run.out"
             self.builder.build(profile, filename, program)
-            self.runner.run(program, input)
+            self.runner.run(program, input_path.open())
+
+    def run_examples_command(self, profile, filename, examples):
+        with tempfile.TemporaryDirectory() as directory:
+            program = Path(directory) / "run.out"
+            self.builder.build(profile, filename, program)
+            self.examples_runner.run(program, examples)
 
     def prepare_submission_command(self, filename):
         file = CppFile(filename)
@@ -66,9 +69,9 @@ class Rithm:
         output_path = output_directory / file.name
         open(output_path, "w").write(submission_text)
 
-    def test_command(self, path, type):
+    def test_command(self, path, task_type):
         path = Path(path)
-        tasks = get_all_tasks(path, type)
+        tasks = get_all_tasks(path, task_type)
         for task in tasks:
             self._process_task(task)
 

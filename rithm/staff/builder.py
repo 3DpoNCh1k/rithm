@@ -1,7 +1,8 @@
 from pathlib import Path
 
-from rithm.compiler import create_compiler
 from rithm.files.cpp import CppFile
+
+from .compiler import create_compiler
 
 
 class Builder:
@@ -16,7 +17,6 @@ class Builder:
             if output_file is not None
             else self.get_default_output_path(input_file)
         )
-        profile = self.config[profile]
         compiler = create_compiler(self.algo_path, self.config[profile])
         compiler.compile_file(input_file.path, output_path)
 

@@ -22,6 +22,7 @@ def main():
     add_test_task_command(subparsers)
     add_stress_command(subparsers)
     add_contest_command(subparsers)
+    add_run_examples_command(subparsers)
 
     args = parser.parse_args()
 

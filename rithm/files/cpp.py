@@ -4,7 +4,7 @@ from .file import File
 
 
 class CppFile(File):
-    valid_extensions = ("cpp", "hpp", "h")
+    valid_extensions = (".cpp", ".hpp", ".h")
 
     def __init__(self, file):
         super().__init__(file)

@@ -2,7 +2,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from rithm.compiler import create_compiler
+from rithm.staff.compiler import create_compiler
 from rithm.tasks.test import TestTask
 
 

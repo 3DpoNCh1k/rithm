@@ -2,8 +2,8 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from rithm.compiler import create_default_compiler
-from rithm.library_checker import LibraryChecker, ProblemChecker
+from rithm.staff.compiler import create_default_compiler
+from rithm.staff.library_checker import LibraryChecker, ProblemChecker
 from rithm.tasks.library_checker import LibraryCheckerTask
 
 

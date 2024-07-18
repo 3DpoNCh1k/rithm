@@ -6,6 +6,7 @@ class Runner:
         pass
 
     def _run(self, program, input_file=None, output_file=None, capture_output=False):
+        print("Runner._run", program, input_file, output_file, capture_output)
         return subprocess.run(
             program,
             stdin=input_file,
