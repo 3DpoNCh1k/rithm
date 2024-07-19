@@ -48,11 +48,11 @@ class Rithm:
     def build_command(self, profile, input_file, output_file):
         self.builder.build(profile, input_file, output_file)
 
-    def run_command(self, profile, filename, input_path):
+    def run_command(self, profile, filename, input_file):
         with tempfile.TemporaryDirectory() as directory:
             program = Path(directory) / "run.out"
             self.builder.build(profile, filename, program)
-            self.runner.run(program, input_path.open())
+            self.runner.run(program, Path(input_file).open())
 
     def run_examples_command(self, profile, filename, examples):
         with tempfile.TemporaryDirectory() as directory:
