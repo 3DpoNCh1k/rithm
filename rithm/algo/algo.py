@@ -39,7 +39,10 @@ class Algo:
 
     def check_bad_patterns(self):
         bad_source_code_includes = ["algo/utils/debug.hpp"]
-        bad_patterns = [r"dbg\("]
+        bad_patterns = [
+            (r"dbg\(", "Remove debugging code"),
+            (r"#include\s+\"", "Don't use quoted includes"),
+        ]
         found_errors = False
         for file in get_files_from_directory(self.source_code_path, recursive=True):
             file = AlgoCppFile(file)
@@ -58,12 +61,12 @@ class Algo:
             if self._get_algo_name(file.path) == "algo/utils/debug.hpp":
                 continue
 
-            for pattern in bad_patterns:
+            for pattern, hint in bad_patterns:
                 m = re.search(pattern, file.text)
                 if m:
                     s = file.text[m.start() : m.end()]
                     print(
-                        f"File {file.path} has a bad pattern: substring '{s}' matches '{pattern}' pattern"
+                        f"File {file.path} has a bad pattern: substring '{s}' matches '{pattern}' pattern.\nHint: {hint}"
                     )
                     found_errors = True
         if found_errors:
