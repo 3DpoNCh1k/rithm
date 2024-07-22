@@ -52,7 +52,9 @@ class Rithm:
         with tempfile.TemporaryDirectory() as directory:
             program = Path(directory) / "run.out"
             self.builder.build(profile, filename, program)
-            self.runner.run(program, Path(input_file).open())
+            if input_file is not None:
+                input_file = Path(input_file).open()
+            self.runner.run(program, input_file)
 
     def run_examples_command(self, profile, filename, examples):
         with tempfile.TemporaryDirectory() as directory:
