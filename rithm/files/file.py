@@ -29,3 +29,9 @@ class File:
     @property
     def directory(self):
         return self.path.parent
+
+    def __hash__(self):
+        return hash(self.full_name)
+
+    def __eq__(self, other):
+        return isinstance(other, File) and self.full_name == other.full_name
