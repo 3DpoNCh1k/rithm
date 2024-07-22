@@ -50,6 +50,9 @@ class Preprocessor:
             def __init__(self, file: AlgoCppFile):
                 self.file = file
 
+            def __repr__(self):
+                return f"Node({self.file.path})"
+
         nodes = {}
         graph = {}
 

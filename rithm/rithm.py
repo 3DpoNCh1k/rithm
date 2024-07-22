@@ -100,6 +100,7 @@ class Rithm:
 
         self._check_pragma(path)
         self.algo.check_extensions()
+        self.algo.check_bad_patterns()
         print("Success!")
 
     def stress_create_command(self):
