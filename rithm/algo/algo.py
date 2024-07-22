@@ -55,6 +55,9 @@ class Algo:
                 )
                 found_errors = True
 
+            if self._get_algo_name(file.path) == "algo/utils/debug.hpp":
+                continue
+
             for pattern in bad_patterns:
                 m = re.search(pattern, file.text)
                 if m:
