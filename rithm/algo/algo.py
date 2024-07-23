@@ -38,7 +38,12 @@ class Algo:
                 sys.exit(1)
 
     def check_bad_patterns(self):
-        bad_source_code_includes = ["algo/utils/debug.hpp"]
+        bad_source_code_includes = ["algo/utils/debug.hpp", "iostream"]
+        bad_source_code_patterns = [
+            (r"using\s+namespace\s+std\s*;", "Don't expose whole std namespace"),
+            (r"std::cout", "Dont'use stdout stream"),
+            (r"std::cin", "Dont'use stdin stream"),
+        ]
         bad_patterns = [
             (r"dbg\(", "Remove debugging code"),
             (r"#include\s+\"", "Don't use quoted includes"),
@@ -61,7 +66,7 @@ class Algo:
             if self._get_algo_name(file.path) == "algo/utils/debug.hpp":
                 continue
 
-            for pattern, hint in bad_patterns:
+            for pattern, hint in bad_patterns + bad_source_code_patterns:
                 m = re.search(pattern, file.text)
                 if m:
                     s = file.text[m.start() : m.end()]
@@ -75,6 +80,21 @@ class Algo:
     def check_dependency_cycle(self, file: Path):
         file = AlgoCppFile(file)
         self.preprocessor.check_dependency_cycle(file)
+
+    def format_includes(self, file: Path):
+        algo_file = AlgoCppFile(file)
+        text = algo_file.text
+        found = False
+        for dependency in algo_file.algo_dependencies + algo_file.tests_dependencies:
+            m = re.search(rf'#include\s+"{dependency}"', text)
+            if m:
+                found = True
+                before = text[: m.start()]
+                after = text[m.end() :]
+                text = before + f"#include <{dependency}>" + after
+
+        if found:
+            algo_file.path.open("w").write(text)
 
     def _get_algo_name(self, file: Path):
         return str(file.relative_to(self.path))

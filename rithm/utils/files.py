@@ -7,4 +7,4 @@ def get_files_from_directory(path: Path, recursive=False, extensions: list[str] 
     files_iterator = filter(lambda path: path.is_file(), iterator)
     if extensions is not None:
         files_iterator = filter(lambda file: file.suffix in extensions, files_iterator)
-    return list(filter(lambda path: path.is_file(), iterator))
+    return list(files_iterator)

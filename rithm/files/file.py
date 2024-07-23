@@ -4,7 +4,8 @@ from pathlib import Path
 class File:
     def __init__(self, file):
         self.path = Path(file).absolute()
-        assert self.path.is_file()
+        assert self.path.exists(), f"{self.full_name} does not exist"
+        assert self.path.is_file(), f"{self.full_name} is not a file"
 
     @property
     def extension(self):

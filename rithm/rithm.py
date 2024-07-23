@@ -101,6 +101,12 @@ class Rithm:
         self._check_pragma(path)
         self.algo.check_extensions()
         self.algo.check_bad_patterns()
+
+        # for file in get_files_from_directory(
+        #     path, recursive=True, extensions=cpp_extensions
+        # ):
+        #     self.algo.format_includes(file)
+
         print("Success!")
 
     def stress_create_command(self):
