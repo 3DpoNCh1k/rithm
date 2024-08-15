@@ -25,5 +25,5 @@ class Builder:
         suffix = input_file.directory.relative_to(current_directory)
         output_directory = current_directory / "build" / suffix
         output_directory.mkdir(parents=True, exist_ok=True)
-        output_path = output_directory / input_file.name_without_extension / ".out"
+        output_path = output_directory / f"{input_file.name_without_extension}.out"
         return output_path

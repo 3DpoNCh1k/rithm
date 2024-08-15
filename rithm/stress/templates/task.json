@@ -1,5 +1,5 @@
 {
   "run_generator_command": "python stress/generator.py",
   "run_correct_solver_command": "python stress/correct_solver.py",
-  "run_solver_command": "./build/main.exe"
+  "run_solver_command": "./build/main.out"
 }

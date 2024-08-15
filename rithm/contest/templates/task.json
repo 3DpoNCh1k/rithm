@@ -1,0 +1,8 @@
+{
+  "examples": [
+    {
+      "solution": "main.cpp",
+      "profile": "Release"
+    }
+  ]
+}

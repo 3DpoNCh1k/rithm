@@ -1,9 +1,10 @@
 #include <iostream>
 
-#include <algo/utils/types/types.hpp>
+#include <algo/utils/types/fundamentals.hpp>
 
 using namespace std;
-using namespace algo::utils;
 
 int main() {
+  std::ios::sync_with_stdio(false);
+  std::cin.tie(nullptr);
 }

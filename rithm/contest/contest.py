@@ -19,8 +19,8 @@ class Contest:
         current_path = Path(".")
         problem_path = current_path / problem
         examples_path = problem_path / "examples"
-        inputs_path = examples_path / "inputs"
-        outputs_path = examples_path / "outputs"
+        inputs_path = examples_path / "in"
+        outputs_path = examples_path / "out"
         problem_path.mkdir()
         examples_path.mkdir()
         inputs_path.mkdir()
