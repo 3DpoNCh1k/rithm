@@ -65,6 +65,7 @@ class Compiler:
                 + "\n".join(lines_after[:LINES_AFTER])
             )
             raise CompilationError(cmd, output)
+            # raise CompilationError(cmd, text)
 
     @property
     def compilation_line(self):

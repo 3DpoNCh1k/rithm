@@ -119,7 +119,7 @@ class Rithm:
         self.contest.create_problems(problems)
 
     def _check_pragma(self, path):
-        header_extensions = ["hpp", "h"]
+        header_extensions = [".hpp", ".h"]
         for file in get_files_from_directory(
             path, recursive=True, extensions=header_extensions
         ):
