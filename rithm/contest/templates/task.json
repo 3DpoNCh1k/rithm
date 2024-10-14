@@ -2,7 +2,7 @@
   "examples": [
     {
       "solution": "main.cpp",
-      "profile": "Release"
+      "profile": "Debug"
     }
   ]
 }
